@@ -1,17 +1,34 @@
 'use client';
 
 import {PhotoIcon, TrashIcon} from '@heroicons/react/24/solid';
+// @ts-expect-error: Library has no types
+import csvToJson from 'convert-csv-to-json';
 import {type ChangeEventHandler, useState} from 'react';
 
 const Home: React.FC<Record<string, never>> = () => {
-    const [files, setFiles] = useState<File[]>([]);
-
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const [files, setFiles] = useState<[File, Record<string, unknown>][]>([]);
+    const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
         if (!event.target.files) {
             return;
         }
-        setFiles([...event.target.files]);
+
+        setFiles([
+            ...files,
+            ...(await Promise.all(
+                [...event.target.files].map(async (file) => {
+                    const text = await file.text();
+                    const data = csvToJson.csvStringToJson(text);
+                    return [file, data] as [File, Record<string, unknown>];
+                })
+            ))
+        ]);
     };
+
+    console.log(files);
+
+    // const [rows, setRows] = useMemo(() => {
+
+    // }, [files])
 
     return (
         <div className="space-y-12">

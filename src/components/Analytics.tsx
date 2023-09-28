@@ -48,11 +48,12 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
     console.log(transactions.filter((t) => t.product.toLowerCase().includes('trein')));
 
     return (
-        <>
+        <div className="mb-4 mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Period</h2>
                 {startDate.toFormat('dd-MM-yyyy')} - {endDate.toFormat('dd-MM-yyyy')}
             </div>
+            <div />
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Amount of transactions</h2>
                 {transactions.length}
@@ -99,12 +100,22 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                     ))}
                 </select>
             </div>
-            <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total with only Basis subscription</h2>
-                {formatCurrency(totalWithBasePrice)}
-            </div>
+            <div />
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Total with subscription</h2>
+
+                {[
+                    SubscriptionType.WEEKEND_VRIJ,
+                    SubscriptionType.WEEKEND_VRIJ_DALKORTING,
+                    SubscriptionType.DAL_VRIJ,
+                    SubscriptionType.ALTIJD_VRIJ
+                ].includes(subscriptionType) && (
+                    <p className="mb-2 italic">
+                        The price of transactions with full discount can&apos;t be calculated, so the prices below are
+                        (partially) incorrect.
+                    </p>
+                )}
+
                 <ul className="list-inside list-disc">
                     {Object.values(SubscriptionType).map((subscriptionType) => (
                         <li key={subscriptionType}>
@@ -114,6 +125,6 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                     ))}
                 </ul>
             </div>
-        </>
+        </div>
     );
 };

@@ -6,7 +6,7 @@ export enum SubscriptionType {
     DAL_VOORDEEL = 'DAL_VOORDEEL',
     ALTIJD_VOORDEEL = 'ALTIJD_VOORDEEL',
     WEEKEND_VRIJ = 'WEEKEND_VRIJ',
-    WEEKEND_VRIJ_DALKORTING = 'WEEKEND_VRIJ_DAL_KORTING',
+    WEEKEND_VRIJ_DALKORTING = 'WEEKEND_VRIJ_DALKORTING',
     DAL_VRIJ = 'DAL_VRIJ',
     ALTIJD_VRIJ = 'ALTIJD_VRIJ'
 }
@@ -24,6 +24,18 @@ export const SUBSCRIPTION_TYPE_NAMES: Record<SubscriptionType, string> = {
 
 export const getDiscount = (transaction: Transaction, subscription: SubscriptionType) => {
     if (
+        ((subscription === SubscriptionType.WEEKEND_VRIJ ||
+            subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
+            [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
+        (subscription === SubscriptionType.DAL_VRIJ &&
+            [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
+        (subscription === SubscriptionType.ALTIJD_VRIJ &&
+            [TimeType.PEAK, TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType))
+    ) {
+        return 1;
+    }
+
+    if (
         (subscription === SubscriptionType.WEEKEND_VOORDEEL &&
             [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
         ((subscription === SubscriptionType.DAL_VOORDEEL ||
@@ -33,17 +45,6 @@ export const getDiscount = (transaction: Transaction, subscription: Subscription
             [TimeType.PEAK, TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType))
     ) {
         return 0.4;
-    }
-
-    if (
-        (subscription === SubscriptionType.WEEKEND_VRIJ &&
-            [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
-        (subscription === SubscriptionType.DAL_VRIJ &&
-            [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
-        (subscription === SubscriptionType.ALTIJD_VRIJ &&
-            [TimeType.PEAK, TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType))
-    ) {
-        return 1;
     }
 
     console.log(subscription, transaction.timeType);

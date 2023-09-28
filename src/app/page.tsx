@@ -15,6 +15,7 @@ interface CsvFile {
 
 const Home: React.FC<Record<string, never>> = () => {
     const [files, setFiles] = useState<CsvFile[]>([]);
+
     const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
         if (!event.target.files) {
             return;
@@ -85,7 +86,10 @@ const Home: React.FC<Record<string, never>> = () => {
                                         >
                                             <div>{file.name}</div>
                                             <div>
-                                                <TrashIcon className="h-4 w-4 cursor-pointer text-gray-300 hover:text-gray-500" />
+                                                <TrashIcon
+                                                    className="h-4 w-4 cursor-pointer text-gray-300 hover:text-gray-500"
+                                                    onClick={() => setFiles(files.filter((f) => f.file !== file))}
+                                                />
                                             </div>
                                         </li>
                                     ))}

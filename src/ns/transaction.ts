@@ -1,4 +1,4 @@
-import {mapKeys, sortBy} from 'lodash';
+import {mapKeys} from 'lodash';
 import {DateTime} from 'luxon';
 
 export enum TimeType {
@@ -49,31 +49,28 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
 };
 
 export const parseTransactions = (rows: Record<string, string>[]) =>
-    sortBy(
-        rows
-            .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
-            .filter((row) => 'type' in row)
-            .map((row) => {
-                const start = DateTime.fromFormat(`${row.date} ${row.startTime}`, 'd-M-y H:m');
-                const end = DateTime.fromFormat(`${row.date} ${row.endTime}`, 'd-M-y H:m');
+    rows
+        .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
+        .filter((row) => 'type' in row)
+        .map((row) => {
+            const start = DateTime.fromFormat(`${row.date} ${row.startTime.substring(0, 5)}`, 'd-M-y H:m');
+            const end = DateTime.fromFormat(`${row.date} ${row.endTime.substring(0, 5)}`, 'd-M-y H:m');
 
-                const debit = parseFloat(row.debit.substring(1).replace(',', '.')) * 100;
-                const credit = parseFloat(row.credit.substring(1).replace(',', '.')) * 100;
+            const debit = parseFloat(row.debit.substring(1).replace(',', '.')) * 100;
+            const credit = parseFloat(row.credit.substring(1).replace(',', '.')) * 100;
 
-                return {
-                    ...row,
-                    start,
-                    end,
-                    debit,
-                    credit,
-                    total: credit - debit,
-                    class: parseInt(row.class),
-                    timeType: getTimeType(start, row.product)
-                } as unknown as Transaction;
-            }),
-        'date',
-        'startTime'
-    );
+            return {
+                ...row,
+                start,
+                end,
+                debit,
+                credit,
+                total: debit - credit,
+                class: parseInt(row.class),
+                timeType: getTimeType(start, row.product)
+            } as unknown as Transaction;
+        })
+        .sort((a, b) => ((a.start.toISO() ?? '') < (b.start.toISO() ?? '') ? -1 : 1));
 
 const HOLIDAYS: Record<string | number, string[] | undefined> = {
     fallback: ['01-01', '25-12', '26-12'],

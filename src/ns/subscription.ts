@@ -22,6 +22,17 @@ export const SUBSCRIPTION_TYPE_NAMES: Record<SubscriptionType, string> = {
     [SubscriptionType.ALTIJD_VRIJ]: 'Altijd Vrij'
 };
 
+export const SUBSCRIPTION_TYPE_PRICES: Record<SubscriptionType, [number, number]> = {
+    [SubscriptionType.BASIS]: [0, 0],
+    [SubscriptionType.WEEKEND_VOORDEEL]: [2_20, 2_20],
+    [SubscriptionType.DAL_VOORDEEL]: [5_60, 5_60],
+    [SubscriptionType.ALTIJD_VOORDEEL]: [26_70, 26_70],
+    [SubscriptionType.WEEKEND_VRIJ]: [34_95, 43_95],
+    [SubscriptionType.WEEKEND_VRIJ_DALKORTING]: [38_35, 47_35],
+    [SubscriptionType.DAL_VRIJ]: [119_95, 159_95],
+    [SubscriptionType.ALTIJD_VRIJ]: [353_80, 601_50]
+};
+
 export const getDiscount = (transaction: Transaction, subscription: SubscriptionType) => {
     if (
         ((subscription === SubscriptionType.WEEKEND_VRIJ ||
@@ -47,7 +58,6 @@ export const getDiscount = (transaction: Transaction, subscription: Subscription
         return 0.4;
     }
 
-    console.log(subscription, transaction.timeType);
     return 0;
 };
 

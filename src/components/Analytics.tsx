@@ -1,8 +1,10 @@
 import {groupBy, mapValues, sumBy} from 'lodash';
-import {useState} from 'react';
+import {DateTime} from 'luxon';
+import {useMemo, useState} from 'react';
 
 import {
     SUBSCRIPTION_TYPE_NAMES,
+    SUBSCRIPTION_TYPE_PRICES,
     SubscriptionType,
     TIME_TYPE_NAMES,
     TimeType,
@@ -16,11 +18,20 @@ export interface AnalyticsProps {
     transactions: Transaction[];
 }
 
-export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
+export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactions}) => {
     const [subscriptionType, setSubscriptionType] = useState(SubscriptionType.BASIS);
 
-    const startDate = transactions.at(0)!.start;
-    const endDate = transactions.at(-1)!.start;
+    const periodStartDate = allTransactions.at(0)!.start;
+    const periodEndDate = allTransactions.at(-1)!.start;
+
+    const [startDate, setStartDate] = useState(periodStartDate);
+    const [endDate, setEndDate] = useState(periodEndDate);
+    const months = Math.ceil(endDate.diff(startDate).as('months'));
+
+    const transactions = useMemo(
+        () => allTransactions.filter((transaction) => transaction.start >= startDate && transaction.start < endDate),
+        [allTransactions, startDate, endDate]
+    );
 
     const transactionsByTimeType = groupBy(transactions, 'timeType') as Record<TimeType, Transaction[] | undefined>;
     const transactionsWithBasePrice = transactions.map((transaction) => ({
@@ -39,21 +50,62 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
     );
 
     const total = sumBy(transactions, 'total');
+    const totalWithSubscription = SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months + total;
     const totalByTimeType = mapValues(transactionsByTimeType, (transactions) => sumBy(transactions, 'total'));
-    const totalWithBasePrice = sumBy(transactionsWithBasePrice, 'total');
     const totalWithSubscriptionPrice = mapValues(transactionsWithSubscriptionPrice, (transactions) =>
         sumBy(transactions, 'total')
     );
 
-    console.log(transactions.filter((t) => t.product.toLowerCase().includes('trein')));
-
     return (
         <div className="mb-4 mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total period</h2>
+                {periodStartDate.toFormat('dd-MM-yyyy')} - {periodEndDate.toFormat('dd-MM-yyyy')}
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total months</h2>
+                {Math.ceil(periodEndDate.diff(periodStartDate).as('months'))}
+            </div>
+            <div>
+                <label htmlFor="start-date" className="block font-medium leading-6 text-gray-900">
+                    Start date
+                </label>
+                <div className="mt-2">
+                    <input
+                        id="start-date"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        name="startDate"
+                        type="date"
+                        min={periodStartDate.toISODate() ?? ''}
+                        value={startDate.toISODate() ?? ''}
+                        onChange={(event) => setStartDate(DateTime.fromISO(event.target.value))}
+                    />
+                </div>
+            </div>
+            <div>
+                <label htmlFor="end-date" className="block  font-medium leading-6 text-gray-900">
+                    End date
+                </label>
+                <div className="mt-2">
+                    <input
+                        id="end-date"
+                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        name="endDate"
+                        type="date"
+                        max={periodEndDate.toISODate() ?? ''}
+                        value={endDate.toISODate() ?? ''}
+                        onChange={(event) => setEndDate(DateTime.fromISO(event.target.value))}
+                    />
+                </div>
+            </div>
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Period</h2>
                 {startDate.toFormat('dd-MM-yyyy')} - {endDate.toFormat('dd-MM-yyyy')}
             </div>
-            <div />
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Months</h2>
+                {months}
+            </div>
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Amount of transactions</h2>
                 {transactions.length}
@@ -102,7 +154,21 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
             </div>
             <div />
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total with subscription</h2>
+                <h2 className="font-medium leading-6 text-gray-900">Subscription costs per month</h2>
+                {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0])}
+            </div>
+            <div />
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total subscription costs</h2>
+                {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months)}
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total with subscription costs</h2>
+                {formatCurrency(totalWithSubscription)}
+            </div>
+
+            <div className="col-span-full">
+                <h2 className="font-medium leading-6 text-gray-900">Comparison of subscriptions</h2>
 
                 {[
                     SubscriptionType.WEEKEND_VRIJ,
@@ -116,14 +182,61 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                     </p>
                 )}
 
-                <ul className="list-inside list-disc">
-                    {Object.values(SubscriptionType).map((subscriptionType) => (
-                        <li key={subscriptionType}>
-                            {SUBSCRIPTION_TYPE_NAMES[subscriptionType]}:{' '}
-                            {formatCurrency(totalWithSubscriptionPrice[subscriptionType])}
-                        </li>
-                    ))}
-                </ul>
+                <table className="min-w-full divide-y divide-gray-300">
+                    <thead>
+                        <tr>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Subscription
+                            </th>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Subscription cost
+                            </th>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Travel costs
+                            </th>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Travel savings
+                            </th>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Total cost
+                            </th>
+                            <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
+                                Total savings
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {Object.values(SubscriptionType).map((subscriptionType) => (
+                            <tr key={subscriptionType}>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {SUBSCRIPTION_TYPE_NAMES[subscriptionType]}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months)}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {formatCurrency(totalWithSubscriptionPrice[subscriptionType])}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {formatCurrency(total - totalWithSubscriptionPrice[subscriptionType])}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {formatCurrency(
+                                        SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months +
+                                            totalWithSubscriptionPrice[subscriptionType]
+                                    )}
+                                </td>
+                                <td className="whitespace-nowrap px-3 py-2">
+                                    {formatCurrency(
+                                        totalWithSubscription -
+                                            (SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months +
+                                                totalWithSubscriptionPrice[subscriptionType])
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

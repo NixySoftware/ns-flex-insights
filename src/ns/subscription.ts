@@ -24,19 +24,21 @@ export const SUBSCRIPTION_TYPE_NAMES: Record<SubscriptionType, string> = {
 
 export const getDiscount = (transaction: Transaction, subscription: SubscriptionType) => {
     if (
-        (subscription === SubscriptionType.WEEKEND_VOORDEEL && transaction.timeType === TimeType.WEEKEND) ||
+        (subscription === SubscriptionType.WEEKEND_VOORDEEL &&
+            [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
         ((subscription === SubscriptionType.DAL_VOORDEEL ||
             subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
-            [TimeType.OFF_PEAK, TimeType.WEEKEND].includes(transaction.timeType)) ||
+            [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
         subscription === SubscriptionType.ALTIJD_VOORDEEL
     ) {
         return 0.4;
     }
 
     if (
-        (subscription === SubscriptionType.WEEKEND_VRIJ && transaction.timeType === TimeType.WEEKEND) ||
+        (subscription === SubscriptionType.WEEKEND_VRIJ &&
+            [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
         ((subscription === SubscriptionType.DAL_VRIJ || subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
-            [TimeType.OFF_PEAK, TimeType.WEEKEND].includes(transaction.timeType)) ||
+            [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
         subscription === SubscriptionType.ALTIJD_VRIJ
     ) {
         return 1;

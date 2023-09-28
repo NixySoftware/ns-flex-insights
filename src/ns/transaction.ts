@@ -5,14 +5,16 @@ export enum TimeType {
     NONE = 'NONE',
     PEAK = 'PEAK',
     OFF_PEAK = 'OFF_PEAK',
-    WEEKEND = 'WEEKEND'
+    WEEKEND = 'WEEKEND',
+    HOLIDAY = 'HOLIDAY'
 }
 
 export const TIME_TYPE_NAMES: Record<TimeType, string> = {
     [TimeType.NONE]: 'None',
     [TimeType.PEAK]: 'Peak',
     [TimeType.OFF_PEAK]: 'Off-peak',
-    [TimeType.WEEKEND]: 'Weekend'
+    [TimeType.WEEKEND]: 'Weekend',
+    [TimeType.HOLIDAY]: 'Holiday'
 };
 
 export interface Transaction {
@@ -31,7 +33,7 @@ export interface Transaction {
     timeType: TimeType;
 }
 
-const COLUMN_NAMES: Record<string, string> = {
+const COLUMN_NAMES: Record<string, string | undefined> = {
     Af: 'debit',
     Bestemming: 'destination',
     Bij: 'credit',
@@ -73,10 +75,27 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
         'startTime'
     );
 
+const HOLIDAYS: Record<string | number, string[] | undefined> = {
+    fallback: ['01-01', '25-12', '26-12'],
+    2023: ['01-01', '07-04', '09-04', '10-04', '27-04', '18-05', '28-05', '29-05', '25-12', '26-12']
+};
+
 const getTimeType = (date: DateTime, product: string): TimeType => {
     if (!product.toLowerCase().includes('trein')) {
         return TimeType.NONE;
     }
+
+    const holidays = HOLIDAYS[date.year] ?? HOLIDAYS.fallback;
+    if (date.hour === 23 && date.minute >= 55 && holidays?.includes(date.minus({days: 1}).toFormat('dd-MM'))) {
+        return TimeType.HOLIDAY;
+    }
+    if (holidays?.includes(date.toFormat('dd-MM'))) {
+        return TimeType.HOLIDAY;
+    }
+    if (date.hour === 0 && date.minute < 5 && holidays?.includes(date.plus({days: 1}).toFormat('dd-MM'))) {
+        return TimeType.HOLIDAY;
+    }
+
     if (date.weekday === 5 && ((date.hour === 18 && date.minute >= 25) || date.hour >= 18)) {
         return TimeType.WEEKEND;
     }
@@ -86,6 +105,7 @@ const getTimeType = (date: DateTime, product: string): TimeType => {
     if (date.weekday === 1 && (date.hour < 4 || (date.hour === 4 && date.minute < 5))) {
         return TimeType.WEEKEND;
     }
+
     if (date.hour === 6 && date.minute >= 35) {
         return TimeType.PEAK;
     }
@@ -104,5 +124,6 @@ const getTimeType = (date: DateTime, product: string): TimeType => {
     if (date.hour === 18 && date.minute < 25) {
         return TimeType.PEAK;
     }
+
     return TimeType.OFF_PEAK;
 };

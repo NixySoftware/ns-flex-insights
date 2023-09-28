@@ -6,6 +6,7 @@ export enum SubscriptionType {
     DAL_VOORDEEL = 'DAL_VOORDEEL',
     ALTIJD_VOORDEEL = 'ALTIJD_VOORDEEL',
     WEEKEND_VRIJ = 'WEEKEND_VRIJ',
+    WEEKEND_VRIJ_DALKORTING = 'WEEKEND_VRIJ_DAL_KORTING',
     DAL_VRIJ = 'DAL_VRIJ',
     ALTIJD_VRIJ = 'ALTIJD_VRIJ'
 }
@@ -15,7 +16,8 @@ export const SUBSCRIPTION_TYPE_NAMES: Record<SubscriptionType, string> = {
     [SubscriptionType.WEEKEND_VOORDEEL]: 'Weekend Voordeel',
     [SubscriptionType.DAL_VOORDEEL]: 'Dal Voordeel',
     [SubscriptionType.ALTIJD_VOORDEEL]: 'Altijd Voordeel',
-    [SubscriptionType.WEEKEND_VRIJ]: 'Weekend Vrij',
+    [SubscriptionType.WEEKEND_VRIJ]: 'Weekend Vrij excl. dalkorting',
+    [SubscriptionType.WEEKEND_VRIJ_DALKORTING]: 'Weekend Vrij incl. dalkorting',
     [SubscriptionType.DAL_VRIJ]: 'Dal Vrij',
     [SubscriptionType.ALTIJD_VRIJ]: 'Altijd Vrij'
 };
@@ -23,7 +25,8 @@ export const SUBSCRIPTION_TYPE_NAMES: Record<SubscriptionType, string> = {
 export const getDiscount = (transaction: Transaction, subscription: SubscriptionType) => {
     if (
         (subscription === SubscriptionType.WEEKEND_VOORDEEL && transaction.timeType === TimeType.WEEKEND) ||
-        (subscription === SubscriptionType.DAL_VOORDEEL &&
+        ((subscription === SubscriptionType.DAL_VOORDEEL ||
+            subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
             [TimeType.OFF_PEAK, TimeType.WEEKEND].includes(transaction.timeType)) ||
         subscription === SubscriptionType.ALTIJD_VOORDEEL
     ) {
@@ -32,7 +35,8 @@ export const getDiscount = (transaction: Transaction, subscription: Subscription
 
     if (
         (subscription === SubscriptionType.WEEKEND_VRIJ && transaction.timeType === TimeType.WEEKEND) ||
-        (subscription === SubscriptionType.DAL_VRIJ && [TimeType.OFF_PEAK, TimeType.WEEKEND]) ||
+        ((subscription === SubscriptionType.DAL_VRIJ || subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
+            [TimeType.OFF_PEAK, TimeType.WEEKEND].includes(transaction.timeType)) ||
         subscription === SubscriptionType.ALTIJD_VRIJ
     ) {
         return 1;

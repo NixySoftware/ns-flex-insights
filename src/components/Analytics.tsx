@@ -1,7 +1,7 @@
-import {groupBy, mapValues, sortBy, sumBy} from 'lodash';
+import {groupBy, mapValues, sumBy} from 'lodash';
 
-import {TIME_TYPE_NAMES, TimeType, type Transaction} from '~/transaction';
-import {CURRENCY_FORMAT} from '~/util';
+import {TIME_TYPE_NAMES, TimeType, type Transaction} from '~/ns';
+import {formatCurrency} from '~/util';
 
 export interface AnalyticsProps {
     transactions: Transaction[];
@@ -13,18 +13,13 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
 
     const transactionsByTimeType = groupBy(transactions, 'timeType') as Record<TimeType, Transaction[] | undefined>;
 
-    const debit = sumBy(transactions, 'debit');
-    const credit = sumBy(transactions, 'credit');
-    const total = credit - debit;
-
-    const debitByTimeType = mapValues(transactionsByTimeType, (transactions) => sumBy(transactions, 'debit'));
-    const creditByTimeType = mapValues(transactionsByTimeType, (transactions) => sumBy(transactions, 'credit'));
+    const total = sumBy(transactions, 'total');
     const totalByTimeType = mapValues(
         transactionsByTimeType,
         (transactions) => sumBy(transactions, 'credit') - sumBy(transactions, 'debit')
     );
 
-    console.log(sortBy(transactionsByTimeType[TimeType.NONE] ?? [], 'debit').reverse());
+    console.log(transactions.filter((t) => t.product.toLowerCase().includes('trein')));
 
     return (
         <>
@@ -37,16 +32,8 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                 {transactions.length}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Debit</h2>
-                {CURRENCY_FORMAT.format(debit)}
-            </div>
-            <div>
-                <h2 className="font-medium leading-6 text-gray-900">Credit</h2>
-                {CURRENCY_FORMAT.format(credit)}
-            </div>
-            <div>
                 <h2 className="font-medium leading-6 text-gray-900">Total</h2>
-                {CURRENCY_FORMAT.format(total)}
+                {formatCurrency(total)}
             </div>
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by time type</h2>
@@ -58,32 +45,13 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                     ))}
                 </ul>
             </div>
-            <div>
-                <h2 className="font-medium leading-6 text-gray-900">Debit by time type</h2>
-                <ul className="list-inside list-disc">
-                    {Object.values(TimeType).map((timeType) => (
-                        <li key={timeType}>
-                            {TIME_TYPE_NAMES[timeType]}: {CURRENCY_FORMAT.format(debitByTimeType[timeType] ?? 0)}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div>
-                <h2 className="font-medium leading-6 text-gray-900">Credit by time type</h2>
-                <ul className="list-inside list-disc">
-                    {Object.values(TimeType).map((timeType) => (
-                        <li key={timeType}>
-                            {TIME_TYPE_NAMES[timeType]}: {CURRENCY_FORMAT.format(creditByTimeType[timeType] ?? 0)}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Total by time type</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TimeType).map((timeType) => (
                         <li key={timeType}>
-                            {TIME_TYPE_NAMES[timeType]}: {CURRENCY_FORMAT.format(totalByTimeType[timeType] ?? 0)}
+                            {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
                         </li>
                     ))}
                 </ul>

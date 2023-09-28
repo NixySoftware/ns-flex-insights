@@ -6,7 +6,7 @@ import csvToJson from 'convert-csv-to-json';
 import {type ChangeEventHandler, useMemo, useState} from 'react';
 
 import {Analytics} from '~/components/Analytics';
-import {parseTransactions} from '~/transaction';
+import {parseTransactions} from '~/ns';
 
 interface CsvFile {
     file: File;

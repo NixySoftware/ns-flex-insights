@@ -29,7 +29,8 @@ export const getDiscount = (transaction: Transaction, subscription: Subscription
         ((subscription === SubscriptionType.DAL_VOORDEEL ||
             subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
             [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
-        subscription === SubscriptionType.ALTIJD_VOORDEEL
+        (subscription === SubscriptionType.ALTIJD_VOORDEEL &&
+            [TimeType.PEAK, TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType))
     ) {
         return 0.4;
     }
@@ -37,13 +38,15 @@ export const getDiscount = (transaction: Transaction, subscription: Subscription
     if (
         (subscription === SubscriptionType.WEEKEND_VRIJ &&
             [TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
-        ((subscription === SubscriptionType.DAL_VRIJ || subscription === SubscriptionType.WEEKEND_VRIJ_DALKORTING) &&
+        (subscription === SubscriptionType.DAL_VRIJ &&
             [TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType)) ||
-        subscription === SubscriptionType.ALTIJD_VRIJ
+        (subscription === SubscriptionType.ALTIJD_VRIJ &&
+            [TimeType.PEAK, TimeType.OFF_PEAK, TimeType.WEEKEND, TimeType.HOLIDAY].includes(transaction.timeType))
     ) {
         return 1;
     }
 
+    console.log(subscription, transaction.timeType);
     return 0;
 };
 
@@ -51,11 +54,11 @@ export const getBasePrice = (transaction: Transaction, subscription: Subscriptio
     const discount = getDiscount(transaction, subscription);
 
     // The price from a full discount can't be recovered, so use it as is
-    return Math.floor(transaction.total * (discount === 1 ? 1 : 1 / (1 - discount)));
+    return transaction.total * (discount === 1 ? 1 : 1 / (1 - discount));
 };
 
 export const getSubscriptionPrice = (transaction: Transaction, subscription: SubscriptionType) => {
     const discount = getDiscount(transaction, subscription);
 
-    return Math.floor(transaction.total * (1 - discount));
+    return transaction.total * (1 - discount);
 };

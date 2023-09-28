@@ -1,6 +1,15 @@
 import {groupBy, mapValues, sumBy} from 'lodash';
+import {useState} from 'react';
 
-import {TIME_TYPE_NAMES, TimeType, type Transaction} from '~/ns';
+import {
+    SUBSCRIPTION_TYPE_NAMES,
+    SubscriptionType,
+    TIME_TYPE_NAMES,
+    TimeType,
+    type Transaction,
+    getBasePrice,
+    getSubscriptionPrice
+} from '~/ns';
 import {formatCurrency} from '~/util';
 
 export interface AnalyticsProps {
@@ -8,15 +17,32 @@ export interface AnalyticsProps {
 }
 
 export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
+    const [subscriptionType, setSubscriptionType] = useState(SubscriptionType.BASIS);
+
     const startDate = transactions.at(0)!.start;
     const endDate = transactions.at(-1)!.start;
 
     const transactionsByTimeType = groupBy(transactions, 'timeType') as Record<TimeType, Transaction[] | undefined>;
+    const transactionsWithBasePrice = transactions.map((transaction) => ({
+        ...transaction,
+        total: getBasePrice(transaction, subscriptionType)
+    }));
+    const transactionsWithSubscriptionPrice = Object.values(SubscriptionType).reduce(
+        (prev, subscriptionType) => {
+            prev[subscriptionType] = transactionsWithBasePrice.map((transaction) => ({
+                ...transaction,
+                total: getSubscriptionPrice(transaction, subscriptionType)
+            }));
+            return prev;
+        },
+        {} as Record<SubscriptionType, Transaction[]>
+    );
 
     const total = sumBy(transactions, 'total');
-    const totalByTimeType = mapValues(
-        transactionsByTimeType,
-        (transactions) => sumBy(transactions, 'credit') - sumBy(transactions, 'debit')
+    const totalByTimeType = mapValues(transactionsByTimeType, (transactions) => sumBy(transactions, 'total'));
+    const totalWithBasePrice = sumBy(transactionsWithBasePrice, 'total');
+    const totalWithSubscriptionPrice = mapValues(transactionsWithSubscriptionPrice, (transactions) =>
+        sumBy(transactions, 'total')
     );
 
     console.log(transactions.filter((t) => t.product.toLowerCase().includes('trein')));
@@ -45,13 +71,45 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions}) => {
                     ))}
                 </ul>
             </div>
-
             <div>
                 <h2 className="font-medium leading-6 text-gray-900">Total by time type</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TimeType).map((timeType) => (
                         <li key={timeType}>
                             {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div>
+                <label htmlFor="subscription-type" className="block font-medium leading-6 text-gray-900">
+                    Current subscription type
+                </label>
+                <select
+                    id="subscription-type"
+                    name="subscriptionType"
+                    className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    value={subscriptionType}
+                    onChange={(event) => setSubscriptionType(event.target.value as SubscriptionType)}
+                >
+                    {Object.values(SubscriptionType).map((subscriptionType) => (
+                        <option key={subscriptionType} value={subscriptionType}>
+                            {SUBSCRIPTION_TYPE_NAMES[subscriptionType]}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total with only Basis subscription</h2>
+                {formatCurrency(totalWithBasePrice)}
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total with subscription</h2>
+                <ul className="list-inside list-disc">
+                    {Object.values(SubscriptionType).map((subscriptionType) => (
+                        <li key={subscriptionType}>
+                            {SUBSCRIPTION_TYPE_NAMES[subscriptionType]}:{' '}
+                            {formatCurrency(totalWithSubscriptionPrice[subscriptionType])}
                         </li>
                     ))}
                 </ul>

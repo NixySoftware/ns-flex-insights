@@ -22,6 +22,7 @@ const RootLayout: React.FC<PropsWithChildren<never>> = ({children}) => {
                 <main>
                     <div className="mx-auto max-w-6xl px-4">{children}</div>
                 </main>
+                <footer></footer>
             </body>
         </html>
     );

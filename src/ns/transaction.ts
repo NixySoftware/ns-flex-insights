@@ -51,8 +51,12 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
 export const parseTransactions = (rows: Record<string, string>[]) =>
     rows
         .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
-        .filter((row) => 'type' in row)
+        .filter((row) => row.type === 'Reis')
         .map((row) => {
+            if (row.startTime.length > 0 && row.endTime.length === 0) {
+                row.endTime = row.startTime;
+            }
+
             const start = DateTime.fromFormat(`${row.date} ${row.startTime.substring(0, 5)}`, 'd-M-y H:m');
             const end = DateTime.fromFormat(`${row.date} ${row.endTime.substring(0, 5)}`, 'd-M-y H:m');
 
@@ -69,6 +73,15 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
                 class: parseInt(row.class),
                 timeType: getTimeType(start, row.product)
             } as unknown as Transaction;
+        })
+        .filter((row) => {
+            if (row.start.invalidReason) {
+                console.error(row.start.invalidReason, row.start.invalidExplanation, row);
+            }
+            if (row.end.invalidReason) {
+                console.error(row.end.invalidReason, row.end.invalidExplanation, row);
+            }
+            return !row.start.invalidReason && !row.end.invalidReason;
         })
         .sort((a, b) => ((a.start.toISO() ?? '') < (b.start.toISO() ?? '') ? -1 : 1));
 

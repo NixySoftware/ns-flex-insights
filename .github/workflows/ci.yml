@@ -31,7 +31,7 @@ jobs:
                   # username: ${{ secrets.GH_CONTAINER_REGISTRY_USER }}
                   # password: ${{ secrets.GH_CONTAINER_REGISTRY_TOKEN }}
             - name: Build and push
-              uses: docker/build-push-action@5
+              uses: docker/build-push-action@v5
               with:
                   push: true
                   tags: ghcr.io/${{ steps.repository_slug.outputs.result }}:${{ github.sha }}
@@ -85,4 +85,4 @@ jobs:
     #         chmod 644 ~/.ssh/known_hosts
     #         eval $(ssh-agent -s)
     #         ssh-add ~/.ssh/id_ed25519
-    #         ssh $SERVER_USER@$SERVER_HOST "transgenderwachttijd transgenderwachttijd-frontend"
+    #         ssh $SERVER_USER@$SERVER_HOST "ns-flex-insights"

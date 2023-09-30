@@ -78,6 +78,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                         name="startDate"
                         type="date"
                         min={periodStartDate.toISODate() ?? ''}
+                        max={periodEndDate.toISODate() ?? ''}
                         value={startDate.toISODate() ?? ''}
                         onChange={(event) => setStartDate(DateTime.fromISO(event.target.value))}
                     />
@@ -93,6 +94,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         name="endDate"
                         type="date"
+                        min={startDate.toISODate() ?? ''}
                         max={periodEndDate.toISODate() ?? ''}
                         value={endDate.toISODate() ?? ''}
                         onChange={(event) => setEndDate(DateTime.fromISO(event.target.value))}

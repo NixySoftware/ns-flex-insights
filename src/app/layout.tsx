@@ -25,7 +25,7 @@ const RootLayout: React.FC<PropsWithChildren<never>> = ({children}) => {
                 <footer>
                     <div className="mb-2 mt-8 flex items-center justify-center">
                         <a
-                            className="mx-2 text-gray-400 hover:text-gray-500"
+                            className="mx-2 cursor-pointer text-gray-400 hover:text-gray-500"
                             href="https://github.com/NixyOrg/ns-flex-insights"
                             target="github"
                         >
@@ -40,7 +40,7 @@ const RootLayout: React.FC<PropsWithChildren<never>> = ({children}) => {
                             </svg>
                         </a>
                     </div>
-                    <div className="mb-8 mt-2 flex items-center justify-center">
+                    <div className="mb-8 mt-2 flex cursor-pointer items-center justify-center">
                         <span className="text-gray-500">
                             <a className="hover:text-gray-600" href="https://nixy.software" target="nixy">
                                 Made by Nixy

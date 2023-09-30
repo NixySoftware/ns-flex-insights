@@ -98,6 +98,12 @@ const Home: React.FC<Record<string, never>> = () => {
                         </div>
                     </div>
 
+                    {files.length === 0 && (
+                        <div className="col-span-full">
+                            <h2 className="font-medium leading-6 text-gray-900">How to use</h2>
+                            Upload one or more travel history files to get an insight into your NS Flex costs.
+                        </div>
+                    )}
                     {files.length > 0 && transactions.length === 0 && (
                         <div className="col-span-full">No transactions in uploaded files.</div>
                     )}

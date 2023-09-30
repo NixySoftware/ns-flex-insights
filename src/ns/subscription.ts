@@ -33,6 +33,42 @@ export const SUBSCRIPTION_TYPE_PRICES: Record<SubscriptionType, [number, number]
     [SubscriptionType.ALTIJD_VRIJ]: [353_80, 601_50]
 };
 
+export const SUBSCRIPTION_MISSING_DATA: Record<SubscriptionType, SubscriptionType[]> = {
+    [SubscriptionType.BASIS]: [],
+    [SubscriptionType.WEEKEND_VOORDEEL]: [],
+    [SubscriptionType.DAL_VOORDEEL]: [],
+    [SubscriptionType.ALTIJD_VOORDEEL]: [],
+    [SubscriptionType.WEEKEND_VRIJ]: [
+        SubscriptionType.BASIS,
+        SubscriptionType.WEEKEND_VOORDEEL,
+        SubscriptionType.DAL_VOORDEEL,
+        SubscriptionType.ALTIJD_VOORDEEL
+    ],
+    [SubscriptionType.WEEKEND_VRIJ_DALKORTING]: [
+        SubscriptionType.BASIS,
+        SubscriptionType.WEEKEND_VOORDEEL,
+        SubscriptionType.DAL_VOORDEEL,
+        SubscriptionType.ALTIJD_VOORDEEL
+    ],
+    [SubscriptionType.DAL_VRIJ]: [
+        SubscriptionType.BASIS,
+        SubscriptionType.WEEKEND_VOORDEEL,
+        SubscriptionType.DAL_VOORDEEL,
+        SubscriptionType.ALTIJD_VOORDEEL,
+        SubscriptionType.WEEKEND_VRIJ,
+        SubscriptionType.WEEKEND_VRIJ_DALKORTING
+    ],
+    [SubscriptionType.ALTIJD_VRIJ]: [
+        SubscriptionType.BASIS,
+        SubscriptionType.WEEKEND_VOORDEEL,
+        SubscriptionType.DAL_VOORDEEL,
+        SubscriptionType.ALTIJD_VOORDEEL,
+        SubscriptionType.WEEKEND_VRIJ,
+        SubscriptionType.WEEKEND_VRIJ_DALKORTING,
+        SubscriptionType.DAL_VRIJ
+    ]
+};
+
 export const getDiscount = (transaction: Transaction, subscription: SubscriptionType) => {
     if (
         ((subscription === SubscriptionType.WEEKEND_VRIJ ||

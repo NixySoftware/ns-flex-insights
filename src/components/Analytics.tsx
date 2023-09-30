@@ -3,6 +3,7 @@ import {DateTime} from 'luxon';
 import {useMemo, useState} from 'react';
 
 import {
+    SUBSCRIPTION_MISSING_DATA,
     SUBSCRIPTION_TYPE_NAMES,
     SUBSCRIPTION_TYPE_PRICES,
     SubscriptionType,
@@ -177,8 +178,8 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                     SubscriptionType.ALTIJD_VRIJ
                 ].includes(subscriptionType) && (
                     <p className="mb-2 italic">
-                        The price of transactions with full discount can&apos;t be calculated, so the prices below are
-                        (partially) incorrect.
+                        The price of transactions with full discount can&apos;t be calculated, so some subscriptions
+                        aren&apos;t shown in the comparison.
                     </p>
                 )}
 
@@ -206,33 +207,44 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {Object.values(SubscriptionType).map((subscriptionType) => (
-                            <tr key={subscriptionType}>
+                        {Object.values(SubscriptionType).map((otherSubscriptionType) => (
+                            <tr key={otherSubscriptionType}>
                                 <td className="whitespace-nowrap px-3 py-2">
-                                    {SUBSCRIPTION_TYPE_NAMES[subscriptionType]}
+                                    {SUBSCRIPTION_TYPE_NAMES[otherSubscriptionType]}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-2">
-                                    {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months)}
+                                    {formatCurrency(SUBSCRIPTION_TYPE_PRICES[otherSubscriptionType][0] * months)}
                                 </td>
-                                <td className="whitespace-nowrap px-3 py-2">
-                                    {formatCurrency(totalWithSubscriptionPrice[subscriptionType])}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-2">
-                                    {formatCurrency(total - totalWithSubscriptionPrice[subscriptionType])}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-2">
-                                    {formatCurrency(
-                                        SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months +
-                                            totalWithSubscriptionPrice[subscriptionType]
-                                    )}
-                                </td>
-                                <td className="whitespace-nowrap px-3 py-2">
-                                    {formatCurrency(
-                                        totalWithSubscription -
-                                            (SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months +
-                                                totalWithSubscriptionPrice[subscriptionType])
-                                    )}
-                                </td>
+                                {SUBSCRIPTION_MISSING_DATA[subscriptionType].includes(otherSubscriptionType) ? (
+                                    <>
+                                        <td className="whitespace-nowrap px-3 py-2">-</td>
+                                        <td className="whitespace-nowrap px-3 py-2">-</td>
+                                        <td className="whitespace-nowrap px-3 py-2">-</td>
+                                        <td className="whitespace-nowrap px-3 py-2">-</td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td className="whitespace-nowrap px-3 py-2">
+                                            {formatCurrency(totalWithSubscriptionPrice[otherSubscriptionType])}
+                                        </td>
+                                        <td className="whitespace-nowrap px-3 py-2">
+                                            {formatCurrency(total - totalWithSubscriptionPrice[otherSubscriptionType])}
+                                        </td>
+                                        <td className="whitespace-nowrap px-3 py-2">
+                                            {formatCurrency(
+                                                SUBSCRIPTION_TYPE_PRICES[otherSubscriptionType][0] * months +
+                                                    totalWithSubscriptionPrice[otherSubscriptionType]
+                                            )}
+                                        </td>
+                                        <td className="whitespace-nowrap px-3 py-2">
+                                            {formatCurrency(
+                                                totalWithSubscription -
+                                                    (SUBSCRIPTION_TYPE_PRICES[otherSubscriptionType][0] * months +
+                                                        totalWithSubscriptionPrice[otherSubscriptionType])
+                                            )}
+                                        </td>
+                                    </>
+                                )}
                             </tr>
                         ))}
                     </tbody>

@@ -8,8 +8,10 @@ import {
     SUBSCRIPTION_TYPE_PRICES,
     SubscriptionType,
     TIME_TYPE_NAMES,
+    TRANSACTION_TYPE_NAMES,
     TimeType,
     type Transaction,
+    TransactionType,
     getBasePrice,
     getSubscriptionPrice
 } from '~/ns';
@@ -34,7 +36,15 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
         [allTransactions, startDate, endDate]
     );
 
-    const transactionsByTimeType = groupBy(transactions, 'timeType') as Record<TimeType, Transaction[] | undefined>;
+    const transactionsByTransactionType = groupBy(transactions, 'type') as Record<
+        TransactionType,
+        Transaction[] | undefined
+    >;
+    const transactionsByTimeType = groupBy(transactionsByTransactionType[TransactionType.TRAIN], 'timeType') as Record<
+        TimeType,
+        Transaction[] | undefined
+    >;
+
     const transactionsWithBasePrice = transactions.map((transaction) => ({
         ...transaction,
         total: getBasePrice(transaction, subscriptionType)
@@ -52,6 +62,9 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
 
     const total = sumBy(transactions, 'total');
     const totalWithSubscription = SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months + total;
+    const totalByTransactionType = mapValues(transactionsByTransactionType, (transactions) =>
+        sumBy(transactions, 'total')
+    );
     const totalByTimeType = mapValues(transactionsByTimeType, (transactions) => sumBy(transactions, 'total'));
     const totalWithSubscriptionPrice = mapValues(transactionsWithSubscriptionPrice, (transactions) =>
         sumBy(transactions, 'total')
@@ -118,23 +131,49 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                 {formatCurrency(total)}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by time type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by transaction type</h2>
                 <ul className="list-inside list-disc">
-                    {Object.values(TimeType).map((timeType) => (
-                        <li key={timeType}>
-                            {TIME_TYPE_NAMES[timeType]}: {transactionsByTimeType[timeType]?.length ?? 0}
+                    {Object.values(TransactionType).map((transactionType) => (
+                        <li key={transactionType}>
+                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            {transactionsByTransactionType[transactionType]?.length ?? 0}
                         </li>
                     ))}
                 </ul>
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total by time type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">Total by transaction type</h2>
                 <ul className="list-inside list-disc">
-                    {Object.values(TimeType).map((timeType) => (
-                        <li key={timeType}>
-                            {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
+                    {Object.values(TransactionType).map((transactionType) => (
+                        <li key={transactionType}>
+                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            {formatCurrency(totalByTransactionType[transactionType] ?? 0)}
                         </li>
                     ))}
+                </ul>
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by train time type</h2>
+                <ul className="list-inside list-disc">
+                    {Object.values(TimeType)
+                        .filter((timeType) => timeType !== TimeType.NONE)
+                        .map((timeType) => (
+                            <li key={timeType}>
+                                {TIME_TYPE_NAMES[timeType]}: {transactionsByTimeType[timeType]?.length ?? 0}
+                            </li>
+                        ))}
+                </ul>
+            </div>
+            <div>
+                <h2 className="font-medium leading-6 text-gray-900">Total by train time type</h2>
+                <ul className="list-inside list-disc">
+                    {Object.values(TimeType)
+                        .filter((timeType) => timeType !== TimeType.NONE)
+                        .map((timeType) => (
+                            <li key={timeType}>
+                                {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
+                            </li>
+                        ))}
                 </ul>
             </div>
             <div>

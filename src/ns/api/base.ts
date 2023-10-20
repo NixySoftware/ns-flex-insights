@@ -21,7 +21,10 @@ const apiCall = async <Parameters extends Record<string, string>>(
 
     const response = await fetch(url, {
         ...init,
-        headers
+        headers,
+        next: {
+            revalidate: 7 * 24 * 60 * 60
+        }
     });
 
     const data = await response.json();

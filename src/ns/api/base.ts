@@ -1,8 +1,8 @@
 import Ajv, {type JTDDataType} from 'ajv/dist/jtd';
 
-export const API_URL = 'https://gateway.apiportal.ns.nl';
-
 const ajv = new Ajv();
+
+const API_URL = 'https://gateway.apiportal.ns.nl';
 
 const apiCall = async <Parameters extends Record<string, string>>(
     endpointUrl: string,

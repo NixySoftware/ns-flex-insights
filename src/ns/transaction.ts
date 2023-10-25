@@ -1,6 +1,22 @@
 import {mapKeys} from 'lodash';
 import {DateTime} from 'luxon';
 
+export enum TransactionType {
+    BIKE_RENTAL = 'BIKE_RENTAL',
+    BIKE_PARKING = 'BIKE_PARKING',
+    BUS_METRO_TRAM = 'BUS_METRO_TRAM',
+    SUPPLEMENT = 'SUPPLEMENT',
+    TRAIN = 'TRAIN'
+}
+
+export const TRANSACTION_TYPE_NAMES: Record<TransactionType, string> = {
+    [TransactionType.BIKE_RENTAL]: 'Bike rental',
+    [TransactionType.BIKE_PARKING]: 'Bike parking',
+    [TransactionType.BUS_METRO_TRAM]: 'Bus, metro, tram',
+    [TransactionType.SUPPLEMENT]: 'Supplement',
+    [TransactionType.TRAIN]: 'Train'
+};
+
 export enum TimeType {
     NONE = 'NONE',
     PEAK = 'PEAK',
@@ -21,7 +37,7 @@ export interface Transaction {
     date: string;
     start: DateTime;
     end: DateTime;
-    type: string;
+    type: TransactionType;
     debit: number;
     credit: number;
     total: number;
@@ -51,7 +67,6 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
 export const parseTransactions = (rows: Record<string, string>[]) =>
     rows
         .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
-        .filter((row) => row.type === 'Reis')
         .map((row) => {
             if (row.startTime.length > 0 && row.endTime.length === 0) {
                 row.endTime = row.startTime;
@@ -67,14 +82,18 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
                 ...row,
                 start,
                 end,
+                type: getTransactionType(row.type.toLowerCase(), row.product.toLowerCase()),
                 debit,
                 credit,
                 total: debit - credit,
                 class: parseInt(row.class),
-                timeType: getTimeType(start, row.product)
+                timeType: getTimeType(start, row.product.toLowerCase())
             } as unknown as Transaction;
         })
         .filter((row) => {
+            if (row.type === undefined) {
+                return false;
+            }
             if (row.start.invalidReason) {
                 console.error(row.start.invalidReason, row.start.invalidExplanation, row);
             }
@@ -85,13 +104,38 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
         })
         .sort((a, b) => ((a.start.toISO() ?? '') < (b.start.toISO() ?? '') ? -1 : 1));
 
+export const getTransactionType = (type: string, product: string) => {
+    if (type === 'deur tot deur') {
+        if (['ov fiets'].includes(product)) {
+            return TransactionType.BIKE_RENTAL;
+        }
+        if (['ns fiets'].includes(product)) {
+            return TransactionType.BIKE_PARKING;
+        }
+    }
+    if (type === 'reis') {
+        if (['treinreizen', 'reizen op rekening trein'].includes(product)) {
+            return TransactionType.TRAIN;
+        }
+        if (['bus, tram en metro reizen'].includes(product)) {
+            return TransactionType.BUS_METRO_TRAM;
+        }
+    }
+
+    if (type === 'product op de kaart laden' && product.includes('toeslag')) {
+        return TransactionType.SUPPLEMENT;
+    }
+
+    return undefined;
+};
+
 const HOLIDAYS: Record<string | number, string[] | undefined> = {
     fallback: ['01-01', '25-12', '26-12'],
     2023: ['01-01', '07-04', '09-04', '10-04', '27-04', '18-05', '28-05', '29-05', '25-12', '26-12']
 };
 
 const getTimeType = (date: DateTime, product: string): TimeType => {
-    if (!product.toLowerCase().includes('trein')) {
+    if (!product.includes('trein')) {
         return TimeType.NONE;
     }
 

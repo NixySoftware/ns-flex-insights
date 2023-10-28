@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Station {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  identifier String @db.VarChar(8)
+  name       String @db.Text
+  data       Json
+
+  originJourneys      Journey[] @relation("OriginStation")
+  destinationJourneys Journey[] @relation("DestinationStation")
+}
+
+model Journey {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  data Json
+
+  originStation        Station        @relation("OriginStation", fields: [originStationId], references: [id])
+  originStationId      String         @db.Uuid
+  destinationStation   Station        @relation("DestinationStation", fields: [destinationStationId], references: [id])
+  destinationStationId String         @db.Uuid
+  prices               JourneyPrice[]
+
+  @@unique([originStationId, destinationStationId])
+}
+
+enum ClassType {
+  FIRST
+  SECOND
+}
+
+model JourneyPrice {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classType ClassType
+  price     Int
+
+  journey   Journey @relation(fields: [journeyId], references: [id])
+  journeyId String  @db.Uuid
+}

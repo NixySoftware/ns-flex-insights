@@ -1,5 +1,8 @@
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const withNextIntl = require('next-intl/plugin')('./src/i18n.ts');
+import nextIntlPlugin from 'next-intl/plugin';
+
+import './src/env.mjs';
+
+const withNextIntl = nextIntlPlugin('./src/i18n.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,4 +15,4 @@ const nextConfig = {
     }
 };
 
-module.exports = withNextIntl(nextConfig);
+export default withNextIntl(nextConfig);

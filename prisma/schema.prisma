@@ -12,7 +12,7 @@ model Station {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  identifier String @db.VarChar(8)
+  identifier String @unique @db.VarChar(8)
   name       String @db.Text
   data       Json
 

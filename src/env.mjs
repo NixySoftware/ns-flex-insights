@@ -9,7 +9,8 @@ export const env = createEnv({
 
         DATABASE_URL: z.string().url(),
 
-        NS_API_SUBSCRIPTION_KEY: z.string()
+        NS_PRICES_API_SUBSCRIPTION_KEY: z.string(),
+        NS_TRAVEL_API_SUBSCRIPTION_KEY: z.string()
     },
     client: {}
 });

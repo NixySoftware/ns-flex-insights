@@ -4,18 +4,19 @@ const ajv = new Ajv();
 
 const API_URL = 'https://gateway.apiportal.ns.nl';
 
-const apiCall = async <Parameters extends Record<string, string>>(
+const apiCall = async <Parameters extends Record<string, number | string>>(
     endpointUrl: string,
+    endpointSubscriptionKey: string,
     parameters?: Parameters,
     init?: RequestInit
 ) => {
     const headers = new Headers(init?.headers);
-    headers.set('Ocp-Apim-Subscription-Key', process.env.NS_API_SUBSCRIPTION_KEY ?? '');
+    headers.set('Ocp-Apim-Subscription-Key', endpointSubscriptionKey);
 
     const url = new URL(`${API_URL}${endpointUrl}`);
     if (parameters) {
         for (const [key, value] of Object.entries(parameters)) {
-            url.searchParams.set(key, value);
+            url.searchParams.set(key, typeof value === 'number' ? value.toString() : value);
         }
     }
 
@@ -36,14 +37,18 @@ const apiCall = async <Parameters extends Record<string, string>>(
     return data;
 };
 
-export const generateApiCall = <Parameters extends Record<string, string>, Schema extends Record<string, unknown>>(
+export const generateApiCall = <
+    Parameters extends Record<string, number | string>,
+    Schema extends Record<string, unknown>
+>(
     endpointUrl: string,
+    endpointSubscriptionKey: string,
     schema: Schema
 ) => {
     const validate = ajv.compile(schema);
 
     return async (parameters?: Parameters, init?: RequestInit): Promise<JTDDataType<Schema>> => {
-        const data = await apiCall(endpointUrl, parameters, init);
+        const data = await apiCall(endpointUrl, endpointSubscriptionKey, parameters, init);
 
         if (!validate(data)) {
             // TODO

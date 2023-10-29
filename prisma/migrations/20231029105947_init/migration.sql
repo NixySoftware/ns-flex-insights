@@ -38,6 +38,9 @@ CREATE TABLE "JourneyPrice" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Station_identifier_key" ON "Station"("identifier");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Journey_originStationId_destinationStationId_key" ON "Journey"("originStationId", "destinationStationId");
 
 -- AddForeignKey

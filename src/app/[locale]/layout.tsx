@@ -1,10 +1,13 @@
 import type {Metadata} from 'next';
+import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
 import type {PropsWithChildren} from 'react';
 
 import '~/app/globals.css';
+import {Example} from '~/components/Example';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
+import {TRPCReactProvider} from '~/trpc/react';
 
 export const metadata: Metadata = {
     title: 'NS Flex Insights',
@@ -22,15 +25,19 @@ const RootLayout: React.FC<PropsWithChildren<Record<string, never>>> = ({childre
     return (
         <html lang={locale}>
             <body>
-                <header>
-                    <Header />
-                </header>
-                <main>
-                    <div className="mx-auto max-w-6xl px-4">{children}</div>
-                </main>
-                <footer>
-                    <Footer />
-                </footer>
+                <TRPCReactProvider headers={headers()}>
+                    <header>
+                        <Header />
+                    </header>
+                    <main>
+                        <Example />
+
+                        <div className="mx-auto max-w-6xl px-4">{children}</div>
+                    </main>
+                    <footer>
+                        <Footer />
+                    </footer>
+                </TRPCReactProvider>
             </body>
         </html>
     );

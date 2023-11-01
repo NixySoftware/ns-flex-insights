@@ -9,15 +9,15 @@ interface CreateContextOptions {
     headers: Headers;
 }
 
-export const createInnerTRPCContext = async (opts: CreateContextOptions) => {
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
     return {
         headers: opts.headers,
         prisma
     };
 };
 
-export const createTRPCContext = async (opts: {req: NextRequest}) => {
-    return await createInnerTRPCContext({
+export const createTRPCContext = (opts: {req: NextRequest}) => {
+    return createInnerTRPCContext({
         headers: opts.req.headers
     });
 };

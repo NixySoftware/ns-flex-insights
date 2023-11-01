@@ -1,7 +1,6 @@
 'use client';
 
 import {PhotoIcon, TrashIcon} from '@heroicons/react/24/solid';
-// @ts-expect-error: Library has no types
 import csvToJson from 'convert-csv-to-json';
 import {type ChangeEventHandler, useMemo, useState} from 'react';
 

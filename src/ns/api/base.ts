@@ -28,7 +28,7 @@ const apiCall = async <Parameters extends Record<string, number | string>>(
         }
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as Record<string, unknown>;
 
     if (response.status >= 400 && response.status <= 599) {
         // TODO: handle errors
@@ -55,6 +55,6 @@ export const generateApiCall = <
             console.error(validate.errors);
         }
 
-        return data;
+        return data as JTDDataType<Schema>;
     };
 };

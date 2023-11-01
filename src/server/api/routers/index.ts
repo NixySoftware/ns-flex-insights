@@ -1,9 +1,11 @@
 import {t} from '~/server/api/trpc';
 
-import {exampleRouter} from './example';
+import {journeyRouter} from './journey';
+import {stationRouter} from './station';
 
 export const appRouter = t.router({
-    example: exampleRouter
+    journey: journeyRouter,
+    station: stationRouter
 });
 
 export type AppRouter = typeof appRouter;

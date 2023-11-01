@@ -1,55 +1,40 @@
 import {ClassType} from '@prisma/client';
+import {TRPCError} from '@trpc/server';
 import {DateTime} from 'luxon';
+import {z} from 'zod';
 
 import {getPrice} from '~/ns/api';
+import {t} from '~/server/api/trpc';
 import {prisma} from '~/server/prisma';
 
-export const GET = async (request: Request) => {
-    const url = new URL(request.url);
-    const origin = url.searchParams.get('origin');
-    const destination = url.searchParams.get('destination');
+const getJourneyInput = z.object({
+    origin: z.string(),
+    destination: z.string()
+});
 
-    if (!origin || !destination) {
-        return Response.json(
-            {
-                message: 'Missing origin and/or destination parameters.'
-            },
-            {
-                status: 400
-            }
-        );
-    }
-
+const getJourney = async (input: z.infer<typeof getJourneyInput>) => {
     const originStation = await prisma.station.findFirst({
         where: {
-            name: origin
+            name: input.origin
         }
     });
     if (!originStation) {
-        return Response.json(
-            {
-                message: 'Could not find origin station.'
-            },
-            {
-                status: 400
-            }
-        );
+        throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Could not find origin station.'
+        });
     }
 
     const destinationStation = await prisma.station.findFirst({
         where: {
-            name: destination
+            name: input.destination
         }
     });
     if (!destinationStation) {
-        return Response.json(
-            {
-                message: 'Could not find destination station.'
-            },
-            {
-                status: 400
-            }
-        );
+        throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Could not find destination station.'
+        });
     }
 
     const select = {
@@ -99,8 +84,8 @@ export const GET = async (request: Request) => {
 
     if (!journey) {
         const data = await getPrice({
-            fromStation: origin,
-            toStation: destination
+            fromStation: input.origin,
+            toStation: input.destination
         });
 
         let firstClassPrice: number | undefined;
@@ -121,12 +106,10 @@ export const GET = async (request: Request) => {
         }
 
         if (firstClassPrice === undefined && secondClassPrice === undefined) {
-            return Response.json(
-                {
-                    message: 'Could not find price option for route.'
-                },
-                {status: 400}
-            );
+            throw new TRPCError({
+                code: 'NOT_FOUND',
+                message: 'Could not find any price options for route.'
+            });
         }
 
         journey = await prisma.journey.create({
@@ -156,5 +139,18 @@ export const GET = async (request: Request) => {
         });
     }
 
-    return Response.json(journey);
+    return journey;
 };
+
+export const journeyRouter = t.router({
+    get: t.procedure.input(getJourneyInput).query(async ({input}) => {
+        return await getJourney(input);
+    }),
+    getMany: t.procedure.input(z.array(getJourneyInput)).query(async ({input}) => {
+        const journeys: Awaited<ReturnType<typeof getJourney>>[] = [];
+        for (const journeyInput of input) {
+            journeys.push(await getJourney(journeyInput));
+        }
+        return journeys;
+    })
+});

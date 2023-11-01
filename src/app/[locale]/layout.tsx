@@ -4,7 +4,6 @@ import {notFound} from 'next/navigation';
 import type {PropsWithChildren} from 'react';
 
 import '~/app/globals.css';
-import {Example} from '~/components/Example';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
 import {TRPCReactProvider} from '~/trpc/react';
@@ -30,8 +29,6 @@ const RootLayout: React.FC<PropsWithChildren<Record<string, never>>> = ({childre
                         <Header />
                     </header>
                     <main>
-                        <Example />
-
                         <div className="mx-auto max-w-6xl px-4">{children}</div>
                     </main>
                     <footer>

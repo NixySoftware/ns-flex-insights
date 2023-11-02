@@ -64,7 +64,7 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
     Vertrek: 'departure'
 };
 
-export const parseTransactions = (rows: Record<string, string>[]) =>
+export const parseTransactions = (rows: Record<string, string>[]): Transaction[] =>
     rows
         .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
         .map((row) => {
@@ -104,7 +104,7 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
         })
         .sort((a, b) => ((a.start.toISO() ?? '') < (b.start.toISO() ?? '') ? -1 : 1));
 
-export const getTransactionType = (type: string, product: string) => {
+export const getTransactionType = (type: string, product: string): TransactionType | undefined => {
     if (type === 'deur tot deur') {
         if (['ov fiets'].includes(product)) {
             return TransactionType.BIKE_RENTAL;

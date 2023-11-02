@@ -7,7 +7,10 @@ import {parseTransactions} from '~/ns';
 const Home: React.FC<Record<string, never>> = () => {
     const [files, setFiles] = useState<CsvFile[]>([]);
 
+    // TODO: find unique files/rows before parsing
     const transactions = useMemo(() => parseTransactions(files.flatMap((file) => file.rows)), [files]);
+
+    // TODO: add tabs (overview, transactions, train, etc.)
 
     return (
         <div className="space-y-12">

@@ -7,5 +7,14 @@
     "printWidth": 120,
     "singleQuote": true,
     "tabWidth": 4,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "overrides": [
+        {
+            "files": "src/messages/*.json",
+            "options": {
+                "plugins": ["@trivago/prettier-plugin-sort-imports", "prettier-plugin-sort-json"],
+                "jsonRecursiveSort": true
+            }
+        }
+    ]
 }

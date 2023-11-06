@@ -1,6 +1,60 @@
 {
+    "Analytics": {
+        "all": {
+            "months": "Totaal aantal maanden",
+            "period": "Totale periode"
+        },
+        "comparison": {
+            "subscription": "Abonnement",
+            "subscriptionCosts": "Abonnementskosten",
+            "title": "Vergelijking van abonnementen",
+            "totalCosts": "Totale kosten",
+            "totalSavings": "Totale besparing",
+            "travelCosts": "Reiskosten",
+            "travelSavings": "Reiskostenbesparing",
+            "warning": "De prijs van transacties met volledige korting kan niet worden berekend, dus sommige abonnementen worden niet weergegeven in de vergelijking."
+        },
+        "date": {
+            "end": "Einddatum",
+            "start": "Startdatum"
+        },
+        "selected": {
+            "amount": "Aantal transacties",
+            "amountByTrainTimeType": "Aantal transacties per treintijdtype",
+            "amountByTransactionType": "Aantal transacties per transactietype",
+            "months": "Aantal maanden",
+            "period": "Periode",
+            "total": "Totaal",
+            "totalByTrainTimeType": "Totaal per treintijdtype",
+            "totalByTransactionType": "Totaal per transactietype",
+            "totalSubscriptionCosts": "Totale abonnementskosten",
+            "totalWithSubscriptionCosts": "Totaal met abonnementskosten"
+        },
+        "subscription": {
+            "current": "Huidige abonnement",
+            "monthlyCost": "Abonnementskosten per maand"
+        }
+    },
     "Footer": {
-        "madeBy": "Gemaakt door Nixy",
-        "github": "GitHub"
+        "github": "GitHub",
+        "madeBy": "Gemaakt door Nixy"
+    },
+    "Header": {
+        "title": "NS Flex Insights"
+    },
+    "Home": {
+        "howTo": {
+            "description": "Upload één of meer reishistorie-bestanden om inzicht te krijgen in je NS Flex kosten.",
+            "title": "Hoe te gebruiken"
+        },
+        "none": "Geen transacties in de geüploade bestanden."
+    },
+    "TravelHistory": {
+        "title": "Reishistorie",
+        "upload": {
+            "dragAndDrop": "or drag and drop",
+            "file": "Upload een bestand",
+            "requirements": "CSV tot 1 MB"
+        }
     }
 }

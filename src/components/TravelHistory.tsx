@@ -1,7 +1,6 @@
-'use client';
-
 import {PhotoIcon, TrashIcon} from '@heroicons/react/24/solid';
 import csvToJson from 'convert-csv-to-json';
+import {useTranslations} from 'next-intl';
 import {type ChangeEventHandler} from 'react';
 
 export interface CsvFile {
@@ -15,6 +14,8 @@ export interface TravelHistoryProps {
 }
 
 export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) => {
+    const t = useTranslations('TravelHistory');
+
     const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
         if (!event.target.files) {
             return;
@@ -44,7 +45,7 @@ export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) =
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
                 <div className="col-span-full">
                     <label className="block font-medium leading-6 text-gray-900" htmlFor="file-upload">
-                        Travel history
+                        {t('title')}
                     </label>
                     <div className="grid grid-cols-2 gap-x-4">
                         <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
@@ -55,7 +56,7 @@ export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) =
                                         className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                                         htmlFor="file-upload"
                                     >
-                                        <span>Upload a file</span>
+                                        <span>{t('upload.file')}</span>
                                         <input
                                             id="file-upload"
                                             className="sr-only"
@@ -66,9 +67,9 @@ export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) =
                                             onChange={handleChange}
                                         />
                                     </label>
-                                    <p className="pl-1">or drag and drop</p>
+                                    <p className="pl-1">{t('upload.dragAndDrop')}</p>
                                 </div>
-                                <p className="text-sm leading-5 text-gray-600">CSV up to 1 MB</p>
+                                <p className="text-sm leading-5 text-gray-600">{t('upload.requirements')}</p>
                             </div>
                         </div>
                         <div className="mt-2 flex justify-center rounded-lg border border-gray-900/25">

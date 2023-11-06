@@ -1,5 +1,11 @@
-export const Header: React.FC<Record<string, never>> = () => (
-    <div className="my-4 flex justify-center">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">NS Flex Insights</h1>
-    </div>
-);
+import {useTranslations} from 'next-intl';
+
+export const Header: React.FC<Record<string, never>> = () => {
+    const t = useTranslations('Header');
+
+    return (
+        <div className="my-4 flex justify-center">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">{t('title')}</h1>
+        </div>
+    );
+};

@@ -1,3 +1,6 @@
+'use client';
+
+import {useTranslations} from 'next-intl';
 import {useMemo, useState} from 'react';
 
 import {Analytics} from '~/components/Analytics';
@@ -5,6 +8,8 @@ import {type CsvFile, TravelHistory} from '~/components/TravelHistory';
 import {parseTransactions} from '~/ns';
 
 const Home: React.FC<Record<string, never>> = () => {
+    const t = useTranslations('Home');
+
     const [files, setFiles] = useState<CsvFile[]>([]);
 
     // TODO: find unique files/rows before parsing
@@ -13,24 +18,23 @@ const Home: React.FC<Record<string, never>> = () => {
     // TODO: add tabs (overview, transactions, train, etc.)
 
     return (
-        <div className="space-y-12">
+        <>
             <TravelHistory files={files} setFiles={setFiles} />
 
+            <div className="mt-6"></div>
             {files.length === 0 && (
-                <div className="col-span-full">
-                    <h2 className="font-medium leading-6 text-gray-900">How to use</h2>
-                    Upload one or more travel history files to get an insight into your NS Flex costs.
+                <div>
+                    <h2 className="font-medium leading-6 text-gray-900">{t('howTo.title')}</h2>
+                    {t('howTo.description')}
                 </div>
             )}
-            {files.length > 0 && transactions.length === 0 && (
-                <div className="col-span-full">No transactions in uploaded files.</div>
-            )}
+            {files.length > 0 && transactions.length === 0 && <div>{t('none')}</div>}
             {transactions.length > 0 && (
-                <div className="col-span-full">
+                <div>
                     <Analytics transactions={transactions} />
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

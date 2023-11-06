@@ -49,10 +49,24 @@
         },
         "none": "Geen transacties in de geüploade bestanden."
     },
+    "TimeTypeName": {
+        "HOLIDAY": "Feestdag",
+        "NONE": "Geen",
+        "OFF_PEAK": "Dal",
+        "PEAK": "Spits",
+        "WEEKEND": "Weekend"
+    },
+    "TransactionTypeName": {
+        "BIKE_PARKING": "Fietsparkeren",
+        "BIKE_RENTAL": "Fietshuur",
+        "BUS_METRO_TRAM": "Bus, metro, tram",
+        "SUPPLEMENT": "Toeslag",
+        "TRAIN": "Trein"
+    },
     "TravelHistory": {
         "title": "Reishistorie",
         "upload": {
-            "dragAndDrop": "or drag and drop",
+            "dragAndDrop": "of sleep het hierheen",
             "file": "Upload een bestand",
             "requirements": "CSV tot 1 MB"
         }

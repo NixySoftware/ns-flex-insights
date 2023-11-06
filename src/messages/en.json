@@ -49,6 +49,20 @@
         },
         "none": "No transactions in uploaded files."
     },
+    "TimeTypeName": {
+        "HOLIDAY": "Holidya",
+        "NONE": "None",
+        "OFF_PEAK": "Off-peak",
+        "PEAK": "Peak",
+        "WEEKEND": "Weekend"
+    },
+    "TransactionTypeName": {
+        "BIKE_PARKING": "Bike parking",
+        "BIKE_RENTAL": "Bike rental",
+        "BUS_METRO_TRAM": "Bus, metro, tram",
+        "SUPPLEMENT": "Supplement",
+        "TRAIN": "Train"
+    },
     "TravelHistory": {
         "title": "Travel history",
         "upload": {

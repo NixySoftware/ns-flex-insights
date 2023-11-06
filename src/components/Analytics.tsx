@@ -3,13 +3,13 @@ import {DateTime} from 'luxon';
 import {useTranslations} from 'next-intl';
 import {useMemo, useState} from 'react';
 
+import {TimeTypeName} from '~/components/TimeTypeName';
+import {TransactionTypeName} from '~/components/TransactionTypeName';
 import {
     SUBSCRIPTION_MISSING_DATA,
     SUBSCRIPTION_TYPE_NAMES,
     SUBSCRIPTION_TYPE_PRICES,
     SubscriptionType,
-    TIME_TYPE_NAMES,
-    TRANSACTION_TYPE_NAMES,
     TimeType,
     type Transaction,
     TransactionType,
@@ -102,7 +102,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
             </div>
             <div>
                 <label htmlFor="end-date" className="block  font-medium leading-6 text-gray-900">
-                    {t('data.end')}
+                    {t('date.end')}
                 </label>
                 <div className="mt-2">
                     <input
@@ -138,7 +138,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                 <ul className="list-inside list-disc">
                     {Object.values(TransactionType).map((transactionType) => (
                         <li key={transactionType}>
-                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            <TransactionTypeName transactionType={transactionType} />:{' '}
                             {transactionsByTransactionType[transactionType]?.length ?? 0}
                         </li>
                     ))}
@@ -149,7 +149,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                 <ul className="list-inside list-disc">
                     {Object.values(TransactionType).map((transactionType) => (
                         <li key={transactionType}>
-                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            <TransactionTypeName transactionType={transactionType} />:{' '}
                             {formatCurrency(totalByTransactionType[transactionType] ?? 0)}
                         </li>
                     ))}
@@ -162,7 +162,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                         .filter((timeType) => timeType !== TimeType.NONE)
                         .map((timeType) => (
                             <li key={timeType}>
-                                {TIME_TYPE_NAMES[timeType]}: {transactionsByTimeType[timeType]?.length ?? 0}
+                                <TimeTypeName timeType={timeType} />: {transactionsByTimeType[timeType]?.length ?? 0}
                             </li>
                         ))}
                 </ul>
@@ -174,7 +174,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                         .filter((timeType) => timeType !== TimeType.NONE)
                         .map((timeType) => (
                             <li key={timeType}>
-                                {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
+                                <TimeTypeName timeType={timeType} />: {formatCurrency(totalByTimeType[timeType] ?? 0)}
                             </li>
                         ))}
                 </ul>

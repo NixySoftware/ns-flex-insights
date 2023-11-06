@@ -9,14 +9,6 @@ export enum TransactionType {
     TRAIN = 'TRAIN'
 }
 
-export const TRANSACTION_TYPE_NAMES: Record<TransactionType, string> = {
-    [TransactionType.BIKE_RENTAL]: 'Bike rental',
-    [TransactionType.BIKE_PARKING]: 'Bike parking',
-    [TransactionType.BUS_METRO_TRAM]: 'Bus, metro, tram',
-    [TransactionType.SUPPLEMENT]: 'Supplement',
-    [TransactionType.TRAIN]: 'Train'
-};
-
 export enum TimeType {
     NONE = 'NONE',
     PEAK = 'PEAK',
@@ -24,14 +16,6 @@ export enum TimeType {
     WEEKEND = 'WEEKEND',
     HOLIDAY = 'HOLIDAY'
 }
-
-export const TIME_TYPE_NAMES: Record<TimeType, string> = {
-    [TimeType.NONE]: 'None',
-    [TimeType.PEAK]: 'Peak',
-    [TimeType.OFF_PEAK]: 'Off-peak',
-    [TimeType.WEEKEND]: 'Weekend',
-    [TimeType.HOLIDAY]: 'Holiday'
-};
 
 export interface Transaction {
     date: string;

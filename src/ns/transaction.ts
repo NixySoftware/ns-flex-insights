@@ -9,14 +9,6 @@ export enum TransactionType {
     TRAIN = 'TRAIN'
 }
 
-export const TRANSACTION_TYPE_NAMES: Record<TransactionType, string> = {
-    [TransactionType.BIKE_RENTAL]: 'Bike rental',
-    [TransactionType.BIKE_PARKING]: 'Bike parking',
-    [TransactionType.BUS_METRO_TRAM]: 'Bus, metro, tram',
-    [TransactionType.SUPPLEMENT]: 'Supplement',
-    [TransactionType.TRAIN]: 'Train'
-};
-
 export enum TimeType {
     NONE = 'NONE',
     PEAK = 'PEAK',
@@ -24,14 +16,6 @@ export enum TimeType {
     WEEKEND = 'WEEKEND',
     HOLIDAY = 'HOLIDAY'
 }
-
-export const TIME_TYPE_NAMES: Record<TimeType, string> = {
-    [TimeType.NONE]: 'None',
-    [TimeType.PEAK]: 'Peak',
-    [TimeType.OFF_PEAK]: 'Off-peak',
-    [TimeType.WEEKEND]: 'Weekend',
-    [TimeType.HOLIDAY]: 'Holiday'
-};
 
 export interface Transaction {
     date: string;
@@ -64,7 +48,7 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
     Vertrek: 'departure'
 };
 
-export const parseTransactions = (rows: Record<string, string>[]) =>
+export const parseTransactions = (rows: Record<string, string>[]): Transaction[] =>
     rows
         .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
         .map((row) => {
@@ -104,7 +88,7 @@ export const parseTransactions = (rows: Record<string, string>[]) =>
         })
         .sort((a, b) => ((a.start.toISO() ?? '') < (b.start.toISO() ?? '') ? -1 : 1));
 
-export const getTransactionType = (type: string, product: string) => {
+export const getTransactionType = (type: string, product: string): TransactionType | undefined => {
     if (type === 'deur tot deur') {
         if (['ov fiets'].includes(product)) {
             return TransactionType.BIKE_RENTAL;

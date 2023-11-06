@@ -1,14 +1,15 @@
 import {groupBy, mapValues, sumBy} from 'lodash';
 import {DateTime} from 'luxon';
+import {useTranslations} from 'next-intl';
 import {useMemo, useState} from 'react';
 
+import {TimeTypeName} from '~/components/TimeTypeName';
+import {TransactionTypeName} from '~/components/TransactionTypeName';
 import {
     SUBSCRIPTION_MISSING_DATA,
     SUBSCRIPTION_TYPE_NAMES,
     SUBSCRIPTION_TYPE_PRICES,
     SubscriptionType,
-    TIME_TYPE_NAMES,
-    TRANSACTION_TYPE_NAMES,
     TimeType,
     type Transaction,
     TransactionType,
@@ -22,6 +23,8 @@ export interface AnalyticsProps {
 }
 
 export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactions}) => {
+    const t = useTranslations('Analytics');
+
     const [subscriptionType, setSubscriptionType] = useState(SubscriptionType.BASIS);
 
     const periodStartDate = allTransactions.at(0)!.start;
@@ -73,16 +76,16 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
     return (
         <div className="mb-4 mb-6 grid grid-cols-2 gap-x-4 gap-y-2">
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total period</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('all.period')}</h2>
                 {periodStartDate.toFormat('dd-MM-yyyy')} - {periodEndDate.toFormat('dd-MM-yyyy')}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total months</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('all.months')}</h2>
                 {Math.ceil(periodEndDate.diff(periodStartDate).as('months'))}
             </div>
             <div>
                 <label htmlFor="start-date" className="block font-medium leading-6 text-gray-900">
-                    Start date
+                    {t('date.start')}
                 </label>
                 <div className="mt-2">
                     <input
@@ -99,7 +102,7 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
             </div>
             <div>
                 <label htmlFor="end-date" className="block  font-medium leading-6 text-gray-900">
-                    End date
+                    {t('date.end')}
                 </label>
                 <div className="mt-2">
                     <input
@@ -115,70 +118,70 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
                 </div>
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Period</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.period')}</h2>
                 {startDate.toFormat('dd-MM-yyyy')} - {endDate.toFormat('dd-MM-yyyy')}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Months</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.months')}</h2>
                 {months}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.amount')}</h2>
                 {transactions.length}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.total')}</h2>
                 {formatCurrency(total)}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by transaction type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.amountByTransactionType')}</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TransactionType).map((transactionType) => (
                         <li key={transactionType}>
-                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            <TransactionTypeName transactionType={transactionType} />:{' '}
                             {transactionsByTransactionType[transactionType]?.length ?? 0}
                         </li>
                     ))}
                 </ul>
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total by transaction type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.totalByTransactionType')}</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TransactionType).map((transactionType) => (
                         <li key={transactionType}>
-                            {TRANSACTION_TYPE_NAMES[transactionType]}:{' '}
+                            <TransactionTypeName transactionType={transactionType} />:{' '}
                             {formatCurrency(totalByTransactionType[transactionType] ?? 0)}
                         </li>
                     ))}
                 </ul>
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Amount of transactions by train time type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.amountByTrainTimeType')}</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TimeType)
                         .filter((timeType) => timeType !== TimeType.NONE)
                         .map((timeType) => (
                             <li key={timeType}>
-                                {TIME_TYPE_NAMES[timeType]}: {transactionsByTimeType[timeType]?.length ?? 0}
+                                <TimeTypeName timeType={timeType} />: {transactionsByTimeType[timeType]?.length ?? 0}
                             </li>
                         ))}
                 </ul>
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total by train time type</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.totalByTrainTimeType')}</h2>
                 <ul className="list-inside list-disc">
                     {Object.values(TimeType)
                         .filter((timeType) => timeType !== TimeType.NONE)
                         .map((timeType) => (
                             <li key={timeType}>
-                                {TIME_TYPE_NAMES[timeType]}: {formatCurrency(totalByTimeType[timeType] ?? 0)}
+                                <TimeTypeName timeType={timeType} />: {formatCurrency(totalByTimeType[timeType] ?? 0)}
                             </li>
                         ))}
                 </ul>
             </div>
             <div>
                 <label htmlFor="subscription-type" className="block font-medium leading-6 text-gray-900">
-                    Current subscription type
+                    {t('subscription.current')}
                 </label>
                 <select
                     id="subscription-type"
@@ -196,54 +199,49 @@ export const Analytics: React.FC<AnalyticsProps> = ({transactions: allTransactio
             </div>
             <div />
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Subscription costs per month</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('subscription.monthlyCost')}</h2>
                 {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0])}
             </div>
             <div />
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total subscription costs</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.totalSubscriptionCosts')}</h2>
                 {formatCurrency(SUBSCRIPTION_TYPE_PRICES[subscriptionType][0] * months)}
             </div>
             <div>
-                <h2 className="font-medium leading-6 text-gray-900">Total with subscription costs</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('selected.totalWithSubscriptionCosts')}</h2>
                 {formatCurrency(totalWithSubscription)}
             </div>
 
             <div className="col-span-full">
-                <h2 className="font-medium leading-6 text-gray-900">Comparison of subscriptions</h2>
+                <h2 className="font-medium leading-6 text-gray-900">{t('comparison.title')}</h2>
 
                 {[
                     SubscriptionType.WEEKEND_VRIJ,
                     SubscriptionType.WEEKEND_VRIJ_DALKORTING,
                     SubscriptionType.DAL_VRIJ,
                     SubscriptionType.ALTIJD_VRIJ
-                ].includes(subscriptionType) && (
-                    <p className="mb-2 italic">
-                        The price of transactions with full discount can&apos;t be calculated, so some subscriptions
-                        aren&apos;t shown in the comparison.
-                    </p>
-                )}
+                ].includes(subscriptionType) && <p className="mb-2 italic">{t('comparison.warning')}</p>}
 
                 <table className="min-w-full divide-y divide-gray-300">
                     <thead>
                         <tr>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Subscription
+                                {t('comparison.subscription')}
                             </th>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Subscription cost
+                                {t('comparison.subscriptionCosts')}
                             </th>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Travel costs
+                                {t('comparison.travelCosts')}
                             </th>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Travel savings
+                                {t('comparison.travelSavings')}
                             </th>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Total cost
+                                {t('comparison.totalCosts')}
                             </th>
                             <th scope="col" className="px-3 py-3.5 text-left font-semibold text-gray-900">
-                                Total savings
+                                {t('comparison.totalSavings')}
                             </th>
                         </tr>
                     </thead>

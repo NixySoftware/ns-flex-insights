@@ -1,3 +1,5 @@
+import {env} from '~/env.mjs';
+
 import {generateApiCall} from './base';
 
 const schema = {
@@ -119,4 +121,8 @@ export type GetPriceParameters = {
 
 export type GetPriceData = ReturnType<typeof getPrice>;
 
-export const getPrice = generateApiCall<GetPriceParameters, typeof schema>('/public-prijsinformatie/prices', schema);
+export const getPrice = generateApiCall<GetPriceParameters, typeof schema>(
+    '/public-prijsinformatie/prices',
+    env.NS_PRICES_API_SUBSCRIPTION_KEY,
+    schema
+);

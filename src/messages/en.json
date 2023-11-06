@@ -1,6 +1,74 @@
 {
+    "Analytics": {
+        "all": {
+            "months": "Total amount of months",
+            "period": "Total period"
+        },
+        "comparison": {
+            "subscription": "Subscription",
+            "subscriptionCosts": "Subscription cost",
+            "title": "Comparison of subscriptions",
+            "totalCosts": "Total costs",
+            "totalSavings": "Total savings",
+            "travelCosts": "Travel costs",
+            "travelSavings": "Travel savings",
+            "warning": "The price of transactions with full discount can't be calculated, so some subscriptions aren't shown in the comparison."
+        },
+        "date": {
+            "end": "End date",
+            "start": "Start date"
+        },
+        "selected": {
+            "amount": "Amount of transactions",
+            "amountByTrainTimeType": "Amount of transactions by train time type",
+            "amountByTransactionType": "Amount of transactions by transaction type",
+            "months": "Amount of months",
+            "period": "Period",
+            "total": "Total",
+            "totalByTrainTimeType": "Total by train time type",
+            "totalByTransactionType": "Total by transaction type",
+            "totalSubscriptionCosts": "Total subscription costs",
+            "totalWithSubscriptionCosts": "Total with subscription costs"
+        },
+        "subscription": {
+            "current": "Current subscription",
+            "monthlyCost": "Subscription costs per month"
+        }
+    },
     "Footer": {
-        "madeBy": "Made by Nixy",
-        "github": "GitHub"
+        "github": "GitHub",
+        "madeBy": "Made by Nixy"
+    },
+    "Header": {
+        "title": "NS Flex Insights"
+    },
+    "Home": {
+        "howTo": {
+            "description": "Upload one or more travel history files to get an insight into your NS Flex costs.",
+            "title": "How to use"
+        },
+        "none": "No transactions in uploaded files."
+    },
+    "TimeTypeName": {
+        "HOLIDAY": "Holidya",
+        "NONE": "None",
+        "OFF_PEAK": "Off-peak",
+        "PEAK": "Peak",
+        "WEEKEND": "Weekend"
+    },
+    "TransactionTypeName": {
+        "BIKE_PARKING": "Bike parking",
+        "BIKE_RENTAL": "Bike rental",
+        "BUS_METRO_TRAM": "Bus, metro, tram",
+        "SUPPLEMENT": "Supplement",
+        "TRAIN": "Train"
+    },
+    "TravelHistory": {
+        "title": "Travel history",
+        "upload": {
+            "dragAndDrop": "or drag and drop",
+            "file": "Upload a file",
+            "requirements": "CSV up to 1 MB"
+        }
     }
 }

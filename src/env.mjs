@@ -12,5 +12,6 @@ export const env = createEnv({
         NS_PRICES_API_SUBSCRIPTION_KEY: z.string(),
         NS_TRAVEL_API_SUBSCRIPTION_KEY: z.string()
     },
-    client: {}
+    client: {},
+    skipValidation: process.env.SKIP_ENV_VALIDATION === '1'
 });

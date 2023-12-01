@@ -13,14 +13,14 @@ export const stationRouter = t.router({
                         .minus({
                             weeks: 1
                         })
-                        .toISO() as string
+                        .toISO()
                 }
             }
         });
 
         if (!station) {
             const data = await getStations();
-            const updatedAt = DateTime.now().toISO() as string;
+            const updatedAt = DateTime.now().toISO();
 
             await prisma.$transaction([
                 ...data.payload.map((station) =>

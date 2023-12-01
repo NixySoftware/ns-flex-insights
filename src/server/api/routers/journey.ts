@@ -76,7 +76,7 @@ const getJourney = async (input: z.infer<typeof getJourneyInput>) => {
                     .minus({
                         weeks: 1
                     })
-                    .toISO() as string
+                    .toISO()
             }
         },
         select

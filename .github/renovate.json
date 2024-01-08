@@ -1,3 +1,3 @@
 {
-    "extends": ["config:recommended", "schedule:weekly"]
+    "extends": ["config:recommended", "schedule:monthly"]
 }

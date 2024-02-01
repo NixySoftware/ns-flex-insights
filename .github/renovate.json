@@ -1,3 +1,3 @@
 {
-    "extends": ["config:recommended", "schedule:monthly"]
+    "extends": ["config:recommended", "schedule:monthly", ":prConcurrentLimitNone", ":prHourlyLimitNone"]
 }

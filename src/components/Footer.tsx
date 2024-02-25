@@ -9,7 +9,7 @@ export const Footer: React.FC<Record<string, never>> = () => {
             <div className="mb-2 mt-8 flex items-center justify-center">
                 <a
                     className="mx-2 cursor-pointer text-gray-400 hover:text-gray-500"
-                    href="https://github.com/NixyOrg/ns-flex-insights"
+                    href="https://github.com/NixySoftware/ns-flex-insights"
                     target="github"
                 >
                     <span className="sr-only">{t('github')}</span>

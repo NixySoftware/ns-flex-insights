@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "Insight into NS Flex travel costs.",
     "author": "Nixy <info@nixy.software>",
-    "repository": "github:NixyOrg/ns-flex-insights",
+    "repository": "github:NixySoftware/ns-flex-insights",
     "license": "MIT",
     "private": true,
     "scripts": {

@@ -1,3 +1,10 @@
 {
-    "extends": ["config:recommended"]
+    "extends": [
+        "config:recommended",
+        "schedule:weekly",
+        ":automergeDigest",
+        ":automergeMinor",
+        ":prConcurrentLimitNone",
+        ":prHourlyLimitNone"
+    ]
 }

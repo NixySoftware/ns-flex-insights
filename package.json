@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "Insight into NS Flex travel costs.",
     "author": "Nixy <info@nixy.software>",
-    "repository": "github:NixyOrg/ns-flex-insights",
+    "repository": "github:NixySoftware/ns-flex-insights",
     "license": "MIT",
     "private": true,
     "scripts": {
@@ -15,7 +15,7 @@
     "dependencies": {
         "@heroicons/react": "^2.0.18",
         "@prisma/client": "^5.5.2",
-        "@t3-oss/env-nextjs": "^0.7.1",
+        "@t3-oss/env-nextjs": "^0.12.0",
         "@tanstack/react-query": "^4.36.1",
         "@trpc/client": "^10.43.1",
         "@trpc/next": "^10.43.1",
@@ -33,28 +33,23 @@
         "zod": "^3.22.4"
     },
     "devDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^4.2.1",
+        "@trivago/prettier-plugin-sort-imports": "^5.0.0",
         "@types/lodash": "^4.14.200",
         "@types/luxon": "^3.3.3",
-        "@types/node": "^20.8.9",
+        "@types/node": "^22.0.0",
         "@types/react": "^18.2.33",
         "@types/react-dom": "^18.2.14",
-        "@typescript-eslint/eslint-plugin": "^6.10.0",
-        "@typescript-eslint/parser": "^6.9.1",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
         "autoprefixer": "^10.4.16",
         "eslint": "^8.53.0",
         "eslint-config-next": "^14.0.1",
         "postcss": "^8.4.31",
         "prettier": "^3.0.3",
-        "prettier-plugin-sort-json": "^3.1.0",
-        "prettier-plugin-tailwindcss": "^0.5.6",
+        "prettier-plugin-sort-json": "^4.0.0",
+        "prettier-plugin-tailwindcss": "^0.6.0",
         "prisma": "^5.5.2",
         "tailwindcss": "^3.3.5",
         "typescript": "^5.2.2"
-    },
-    "overrides": {
-        "next-intl": {
-            "next": "^14.0.0"
-        }
     }
 }

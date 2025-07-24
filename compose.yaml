@@ -3,8 +3,13 @@ services:
         image: postgres
         restart: unless-stopped
         ports:
-            - '15432:5432'
+            - '25432:5432'
+        volumes:
+            - postgresql-data:/var/lib/postgresql/data
         environment:
             POSTGRES_USER: nsflexinsights
             POSTGRES_PASSWORD: nsflexinsights
             POSTGRES_DB: nsflexinsights
+
+volumes:
+    postgresql-data:

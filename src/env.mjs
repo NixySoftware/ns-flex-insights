@@ -7,11 +7,12 @@ export const env = createEnv({
     server: {
         NODE_ENV: z.enum(['development', 'production']),
 
-        DATABASE_URL: z.string().url(),
+        DATABASE_URL: z.url(),
 
         NS_PRICES_API_SUBSCRIPTION_KEY: z.string(),
         NS_TRAVEL_API_SUBSCRIPTION_KEY: z.string()
     },
     client: {},
+    // eslint-disable-next-line no-undef
     skipValidation: process.env.SKIP_ENV_VALIDATION === '1'
 });

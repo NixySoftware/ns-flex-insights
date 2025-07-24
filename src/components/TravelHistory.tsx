@@ -3,48 +3,50 @@ import csvToJson from 'convert-csv-to-json';
 import {useTranslations} from 'next-intl';
 import {type ChangeEventHandler} from 'react';
 
-export interface CsvFile {
+export type CsvFile = {
     file: File;
     rows: Record<string, string>[];
-}
+};
 
-export interface TravelHistoryProps {
+export type TravelHistoryProps = {
     files: CsvFile[];
     setFiles: (files: CsvFile[]) => void;
-}
+};
 
-export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) => {
+export const TravelHistory = ({files, setFiles}: TravelHistoryProps) => {
     const t = useTranslations('TravelHistory');
 
-    const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
         if (!event.target.files) {
             return;
         }
 
-        setFiles([
-            ...files,
-            ...(await Promise.all(
-                [...event.target.files].map(async (file) => {
-                    const text = await file.text();
-                    const rows: CsvFile['rows'] = csvToJson
-                        .fieldDelimiter(',')
-                        .supportQuotedField(true)
-                        .csvStringToJson(text);
+        void (async () => {
+            setFiles([
+                ...files,
+                ...(await Promise.all(
+                    Array.from(event.target.files ?? []).map(async (file) => {
+                        const text = await file.text();
+                        const rows: CsvFile['rows'] = csvToJson
+                            .fieldDelimiter(',')
+                            .supportQuotedField(true)
+                            .csvStringToJson(text);
 
-                    return {
-                        file,
-                        rows
-                    };
-                })
-            ))
-        ]);
+                        return {
+                            file,
+                            rows
+                        };
+                    })
+                ))
+            ]);
+        })();
     };
 
     return (
         <form>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
                 <div className="col-span-full">
-                    <label className="block font-medium leading-6 text-gray-900" htmlFor="file-upload">
+                    <label className="block leading-6 font-medium text-gray-900" htmlFor="file-upload">
                         {t('title')}
                     </label>
                     <div className="grid grid-cols-2 gap-x-4">
@@ -53,7 +55,7 @@ export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) =
                                 <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
                                 <div className="mt-4 flex leading-6 text-gray-600">
                                     <label
-                                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:outline-none hover:text-indigo-500"
                                         htmlFor="file-upload"
                                     >
                                         <span>{t('upload.file')}</span>
@@ -75,14 +77,16 @@ export const TravelHistory: React.FC<TravelHistoryProps> = ({files, setFiles}) =
                         <div className="mt-2 flex justify-center rounded-lg border border-gray-900/25">
                             {/* TODO: https://tailwindui.com/components/application-ui/lists/stacked-lists#component-f0f183415de745e81fa742d6e1df9e04 */}
                             {/* TODO: merge that with div above */}
-                            <ul role="list" className="divide-y divide-gray-100">
+                            <ul className="divide-y divide-gray-100">
                                 {files.map(({file}) => (
                                     <li key={file.name} className="flex items-center justify-between gap-x-6 px-5 py-5">
                                         <div>{file.name}</div>
                                         <div>
                                             <TrashIcon
                                                 className="h-4 w-4 cursor-pointer text-gray-300 hover:text-gray-500"
-                                                onClick={() => setFiles(files.filter((f) => f.file !== file))}
+                                                onClick={() => {
+                                                    setFiles(files.filter((f) => f.file !== file));
+                                                }}
                                             />
                                         </div>
                                     </li>

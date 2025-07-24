@@ -1,10 +1,13 @@
-import Ajv, {type JTDDataType} from 'ajv/dist/jtd';
+import {Ajv, type JTDDataType} from 'ajv/dist/jtd';
 
 const ajv = new Ajv();
 
 const API_URL = 'https://gateway.apiportal.ns.nl';
 
-const apiCall = async <Parameters extends Record<string, number | string>>(
+const apiCall = async <
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+    Parameters extends Record<string, number | string>
+>(
     endpointUrl: string,
     endpointSubscriptionKey: string,
     parameters?: Parameters,
@@ -38,6 +41,7 @@ const apiCall = async <Parameters extends Record<string, number | string>>(
 };
 
 export const generateApiCall = <
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
     Parameters extends Record<string, number | string>,
     Schema extends Record<string, unknown>
 >(

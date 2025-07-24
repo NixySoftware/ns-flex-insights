@@ -17,11 +17,11 @@ export enum TimeType {
     HOLIDAY = 'HOLIDAY'
 }
 
-export interface Transaction {
+export type Transaction = {
     date: string;
     start: DateTime;
     end: DateTime;
-    type: TransactionType;
+    type: TransactionType | undefined;
     debit: number;
     credit: number;
     total: number;
@@ -31,7 +31,7 @@ export interface Transaction {
     product: string;
     privateOrBusiness: string;
     timeType: TimeType;
-}
+};
 
 const COLUMN_NAMES: Record<string, string | undefined> = {
     Af: 'debit',
@@ -50,7 +50,7 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
 
 export const parseTransactions = (rows: Record<string, string>[]): Transaction[] =>
     rows
-        .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
+        .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key.replace(/\s+/g, '')] ?? key))
         .map((row) => {
             if (row.startTime.length > 0 && row.endTime.length === 0) {
                 row.endTime = row.startTime;

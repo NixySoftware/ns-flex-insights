@@ -1,6 +1,6 @@
 import {useTranslations} from 'next-intl';
 
-export const Header: React.FC<Record<string, never>> = () => {
+export const Header = () => {
     const t = useTranslations('Header');
 
     return (

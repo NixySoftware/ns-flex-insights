@@ -17,11 +17,11 @@ export enum TimeType {
     HOLIDAY = 'HOLIDAY'
 }
 
-export interface Transaction {
+export type Transaction = {
     date: string;
     start: DateTime;
     end: DateTime;
-    type: TransactionType;
+    type: TransactionType | undefined;
     debit: number;
     credit: number;
     total: number;
@@ -31,7 +31,7 @@ export interface Transaction {
     product: string;
     privateOrBusiness: string;
     timeType: TimeType;
-}
+};
 
 const COLUMN_NAMES: Record<string, string | undefined> = {
     Af: 'debit',

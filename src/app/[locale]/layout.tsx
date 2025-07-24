@@ -1,7 +1,6 @@
 import type {Metadata} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
-import type {PropsWithChildren} from 'react';
 
 import '~/app/globals.css';
 import {Footer} from '~/components/Footer';
@@ -14,11 +13,11 @@ export const metadata: Metadata = {
     description: 'Insight into NS Flex travel costs.'
 };
 
-export interface RootLayoutProps extends PropsWithChildren {
+export type RootLayoutProps = React.PropsWithChildren<{
     params: Promise<{locale: string}>;
-}
+}>;
 
-const RootLayout: React.FC<RootLayoutProps> = async ({children, params}) => {
+const RootLayout = async ({children, params}: RootLayoutProps) => {
     // Ensure that the incoming `locale` is valid
     const {locale} = await params;
     if (!hasLocale(routing.locales, locale)) {

@@ -7,7 +7,7 @@ import {Analytics} from '~/components/Analytics';
 import {type CsvFile, TravelHistory} from '~/components/TravelHistory';
 import {parseTransactions} from '~/ns';
 
-const Home: React.FC<Record<string, never>> = () => {
+const Home = () => {
     const t = useTranslations('Home');
 
     const [files, setFiles] = useState<CsvFile[]>([]);
@@ -24,7 +24,7 @@ const Home: React.FC<Record<string, never>> = () => {
             <div className="mt-6"></div>
             {files.length === 0 && (
                 <div>
-                    <h2 className="font-medium leading-6 text-gray-900">{t('howTo.title')}</h2>
+                    <h2 className="leading-6 font-medium text-gray-900">{t('howTo.title')}</h2>
                     {t('howTo.description')}
                 </div>
             )}

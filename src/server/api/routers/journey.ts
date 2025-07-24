@@ -4,7 +4,7 @@ import {DateTime} from 'luxon';
 import {z} from 'zod';
 
 import {getPrice} from '~/ns/api';
-import {t} from '~/server/api/trpc';
+import {createTRPCRouter, publicProcedure} from '~/server/api/trpc';
 import {prisma} from '~/server/prisma';
 
 const getJourneyInput = z.object({
@@ -142,11 +142,11 @@ const getJourney = async (input: z.infer<typeof getJourneyInput>) => {
     return journey;
 };
 
-export const journeyRouter = t.router({
-    get: t.procedure.input(getJourneyInput).query(async ({input}) => {
+export const journeyRouter = createTRPCRouter({
+    get: publicProcedure.input(getJourneyInput).query(async ({input}) => {
         return await getJourney(input);
     }),
-    getMany: t.procedure.input(z.array(getJourneyInput)).query(async ({input}) => {
+    getMany: publicProcedure.input(z.array(getJourneyInput)).query(async ({input}) => {
         const journeys: Awaited<ReturnType<typeof getJourney>>[] = [];
         for (const journeyInput of input) {
             journeys.push(await getJourney(journeyInput));

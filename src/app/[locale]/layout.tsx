@@ -1,6 +1,5 @@
 import type {Metadata} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
-import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
 import type {PropsWithChildren} from 'react';
 
@@ -30,7 +29,7 @@ const RootLayout: React.FC<RootLayoutProps> = async ({children, params}) => {
         <html lang={locale}>
             <body>
                 <NextIntlClientProvider locale={locale}>
-                    <TRPCReactProvider headers={headers()}>
+                    <TRPCReactProvider>
                         <header>
                             <Header />
                         </header>

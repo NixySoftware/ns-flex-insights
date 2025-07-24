@@ -1,11 +1,11 @@
 import {DateTime} from 'luxon';
 
 import {getStations} from '~/ns/api';
-import {t} from '~/server/api/trpc';
+import {createTRPCRouter, publicProcedure} from '~/server/api/trpc';
 import {prisma} from '~/server/prisma';
 
-export const stationRouter = t.router({
-    list: t.procedure.query(async () => {
+export const stationRouter = createTRPCRouter({
+    list: publicProcedure.query(async () => {
         const station = await prisma.station.findFirst({
             where: {
                 updatedAt: {

@@ -1,8 +1,8 @@
-import nextIntlPlugin from 'next-intl/plugin';
+import createNextIntlPlugin from 'next-intl/plugin';
 
 import './src/env.mjs';
 
-const withNextIntl = nextIntlPlugin('./src/i18n.ts');
+const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

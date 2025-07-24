@@ -1,5 +1,5 @@
 import type {Metadata} from 'next';
-import {NextIntlClientProvider} from 'next-intl';
+import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {headers} from 'next/headers';
 import {notFound} from 'next/navigation';
 import type {PropsWithChildren} from 'react';
@@ -7,7 +7,7 @@ import type {PropsWithChildren} from 'react';
 import '~/app/globals.css';
 import {Footer} from '~/components/Footer';
 import {Header} from '~/components/Header';
-import getIntlConfig from '~/i18n';
+import {routing} from '~/i18n/routing';
 import {TRPCReactProvider} from '~/trpc/react';
 
 export const metadata: Metadata = {
@@ -15,25 +15,21 @@ export const metadata: Metadata = {
     description: 'Insight into NS Flex travel costs.'
 };
 
-const locales = ['en', 'nl'];
-
 export interface RootLayoutProps extends PropsWithChildren {
-    params: {
-        locale: string;
-    };
+    params: Promise<{locale: string}>;
 }
 
-const RootLayout: React.FC<RootLayoutProps> = async ({children, params: {locale}}) => {
-    if (!locales.includes(locale)) {
+const RootLayout: React.FC<RootLayoutProps> = async ({children, params}) => {
+    // Ensure that the incoming `locale` is valid
+    const {locale} = await params;
+    if (!hasLocale(routing.locales, locale)) {
         notFound();
     }
-
-    const intlConfig = await getIntlConfig({locale});
 
     return (
         <html lang={locale}>
             <body>
-                <NextIntlClientProvider locale={locale} messages={intlConfig.messages} timeZone={intlConfig.timeZone}>
+                <NextIntlClientProvider locale={locale}>
                     <TRPCReactProvider headers={headers()}>
                         <header>
                             <Header />

@@ -36,8 +36,7 @@
         }
     },
     "Footer": {
-        "github": "GitHub",
-        "madeBy": "Made by Nixy"
+        "github": "GitHub"
     },
     "Header": {
         "title": "NS Flex Insights"

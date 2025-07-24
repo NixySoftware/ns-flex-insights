@@ -50,7 +50,7 @@ const COLUMN_NAMES: Record<string, string | undefined> = {
 
 export const parseTransactions = (rows: Record<string, string>[]): Transaction[] =>
     rows
-        .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key] ?? key))
+        .map((row) => mapKeys(row, (_, key) => COLUMN_NAMES[key.replace(/\s+/g, '')] ?? key))
         .map((row) => {
             if (row.startTime.length > 0 && row.endTime.length === 0) {
                 row.endTime = row.startTime;

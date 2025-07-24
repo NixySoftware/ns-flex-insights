@@ -2,11 +2,11 @@ import {useTranslations} from 'next-intl';
 
 import type {TimeType} from '~/ns';
 
-export interface TimeTypeNameProps {
+export type TimeTypeNameProps = {
     timeType: TimeType;
-}
+};
 
-export const TimeTypeName: React.FC<TimeTypeNameProps> = ({timeType}) => {
+export const TimeTypeName = ({timeType}: TimeTypeNameProps) => {
     const t = useTranslations('TimeTypeName');
     return t(timeType);
 };

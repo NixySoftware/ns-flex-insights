@@ -1,12 +1,11 @@
 import {useTranslations} from 'next-intl';
-import React from 'react';
 
-export const Footer: React.FC<Record<string, never>> = () => {
+export const Footer = () => {
     const t = useTranslations('Footer');
 
     return (
         <>
-            <div className="mb-2 mt-8 flex items-center justify-center">
+            <div className="mt-8 mb-2 flex items-center justify-center">
                 <a
                     className="mx-2 cursor-pointer text-gray-400 hover:text-gray-500"
                     href="https://github.com/NixySoftware/ns-flex-insights"
@@ -23,7 +22,7 @@ export const Footer: React.FC<Record<string, never>> = () => {
                     </svg>
                 </a>
             </div>
-            <div className="mb-8 mt-2 flex cursor-pointer items-center justify-center">
+            <div className="mt-2 mb-8 flex cursor-pointer items-center justify-center">
                 <span className="text-gray-500">
                     <a className="hover:text-gray-600" href="https://nixy.software" target="nixy">
                         {t('madeBy')}
